@@ -37,7 +37,7 @@ useEffect(() => {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/insurance/${patientId}`);
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/insurance/${patientId}`);
       const result = await response.json();
 
       console.log("🔹 Raw backend response:", result);
@@ -151,7 +151,7 @@ useEffect(() => {
       // Save insurance data first
       updatePreviewData(insuranceData, "insurance");
 
-      const res = await fetch("http://localhost:5000/api/insurance", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/insurance`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -200,7 +200,7 @@ useEffect(() => {
 
     try {
       const uploadRes = await fetch(
-        `http://localhost:5000/api/insurance/upload/${patientId}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/insurance/upload/${patientId}`,
         {
           method: "POST",
           body: formData,

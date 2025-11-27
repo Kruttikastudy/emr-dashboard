@@ -52,7 +52,7 @@ const PatientDemographics = () => {
       setPatientId(storedPatientId); // Store patient ID in state
 
       try {
-        const response = await fetch(`http://localhost:5000/api/patient-demographics/${storedPatientId}`);
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/patient-demographics/${storedPatientId}`);
         if (!response.ok) return;
 
         const json = await response.json();
@@ -87,7 +87,7 @@ const PatientDemographics = () => {
         
         if (data.img && data.img.file_id) {
           // Backend stores file_id in GridFS
-          const imageUrl = `http://localhost:5000/api/patient-demographics/file/${data.img.file_id}`;
+          const imageUrl = `${import.meta.env.VITE_BACKEND_URL}/api/patient-demographics/file/${data.img.file_id}`;
           console.log("Loading image from GridFS:", imageUrl);
           
           // Test if the image loads
@@ -232,9 +232,9 @@ const PatientDemographics = () => {
 
       // Use PUT for updates, POST for new patients
       const method = currentPatientId ? 'PUT' : 'POST';
-      const url = currentPatientId 
-        ? `http://localhost:5000/api/patient-demographics/${currentPatientId}`
-        : "http://localhost:5000/api/patient-demographics";
+      const url = currentPatientId
+        ? `${import.meta.env.VITE_BACKEND_URL}/api/patient-demographics/${currentPatientId}`
+        : `${import.meta.env.VITE_BACKEND_URL}/api/patient-demographics`;
 
       console.log("Sending request:", method, url);
 

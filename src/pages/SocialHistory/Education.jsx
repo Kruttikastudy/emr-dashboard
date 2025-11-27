@@ -19,7 +19,7 @@ const Education = ({ onClose }) => {
       }
 
       try {
-        const response = await fetch(`http://localhost:5000/api/social-history/${patientId}/education`);
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/education`);
         
         if (response.ok) {
           const result = await response.json();
@@ -76,7 +76,7 @@ const Education = ({ onClose }) => {
         notes: formData.notes
       };
 
-      const response = await fetch(`http://localhost:5000/api/social-history/${patientId}/education`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/education`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(educationData)

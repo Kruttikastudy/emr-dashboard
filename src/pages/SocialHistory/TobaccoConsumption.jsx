@@ -27,7 +27,7 @@ const TobaccoConsumption = ({ onClose }) => {
 
       try {
         console.log("Fetching tobacco consumption data for patient:", patientId);
-        const response = await fetch(`http://localhost:5000/api/social-history/${patientId}/tobacco-consumption`);
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/tobacco-consumption`);
         
         console.log("Response status:", response.status);
         
@@ -91,9 +91,9 @@ const TobaccoConsumption = ({ onClose }) => {
       };
 
       console.log('Sending tobacco consumption data:', tobaccoConsumptionData);
-      console.log('To URL:', `http://localhost:5000/api/social-history/${patientId}/tobacco-consumption`);
+      console.log('To URL:', `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/tobacco-consumption`);
 
-      const response = await fetch(`http://localhost:5000/api/social-history/${patientId}/tobacco-consumption`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/tobacco-consumption`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(tobaccoConsumptionData),

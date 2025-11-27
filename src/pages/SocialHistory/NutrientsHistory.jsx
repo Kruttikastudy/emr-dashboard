@@ -23,7 +23,7 @@ const NutrientsHistory = ({ onClose }) => {
 
       try {
         const response = await fetch(
-          `http://localhost:5000/api/social-history/${patientId}/nutrients-history`
+          `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/nutrients-history`
         );
         const data = await response.json();
         
@@ -81,7 +81,7 @@ const NutrientsHistory = ({ onClose }) => {
 
       // Save to backend using patientId
       const response = await fetch(
-        `http://localhost:5000/api/social-history/${patientId}/nutrients-history`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/nutrients-history`,
         {
           method: 'POST',
           headers: {
@@ -123,7 +123,7 @@ const NutrientsHistory = ({ onClose }) => {
     // Re-fetch data to reset form
     try {
       const response = await fetch(
-        `http://localhost:5000/api/social-history/${patientId}/nutrients-history`
+        `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/nutrients-history`
       );
       const data = await response.json();
       

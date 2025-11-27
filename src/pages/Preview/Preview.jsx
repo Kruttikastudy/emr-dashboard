@@ -29,7 +29,7 @@ export default function Preview() {
     const fetchData = async () => {
       try {
         // Fetch patient demographics
-        const patientRes = await fetch(`http://localhost:5000/api/patient-demographics/${patientId}`);
+        const patientRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/patient-demographics/${patientId}`);
         if (patientRes.ok) {
           const patientJson = await patientRes.json();
           if (patientJson.success && patientJson.data) {
@@ -42,7 +42,7 @@ export default function Preview() {
 
       try {
         // Fetch contact information
-        const contactRes = await fetch(`http://localhost:5000/api/contact-information/${patientId}`);
+        const contactRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/contact-information/${patientId}`);
         if (contactRes.ok) {
           const contactJson = await contactRes.json();
           if (contactJson.success && contactJson.data) {
@@ -58,7 +58,7 @@ export default function Preview() {
 
       try {
         // Fetch insurance information
-        const insuranceRes = await fetch(`http://localhost:5000/api/insurance/${patientId}`);
+        const insuranceRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/insurance/${patientId}`);
         if (insuranceRes.ok) {
           const insuranceJson = await insuranceRes.json();
           if (insuranceJson.insurance) {
@@ -74,7 +74,7 @@ export default function Preview() {
 
       try {
         // Fetch allergies
-        const allergiesRes = await fetch(`http://localhost:5000/api/allergies/${patientId}`);
+        const allergiesRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/allergies/${patientId}`);
         if (allergiesRes.ok) {
           const allergiesJson = await allergiesRes.json();
           if (allergiesJson.success) {
@@ -87,7 +87,7 @@ export default function Preview() {
 
       try {
         // Fetch family history
-        const familyHistoryRes = await fetch(`http://localhost:5000/api/family-history/${patientId}`);
+        const familyHistoryRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/family-history/${patientId}`);
         if (familyHistoryRes.ok) {
           const familyHistoryJson = await familyHistoryRes.json();
           if (familyHistoryJson.success) {
@@ -100,19 +100,19 @@ export default function Preview() {
 
       try {
         // Fetch social history - tobacco smoking
-        const tobaccoSmokingRes = await fetch(`http://localhost:5000/api/social-history/${patientId}/tobacco-smoking`);
-        const tobaccoConsumptionRes = await fetch(`http://localhost:5000/api/social-history/${patientId}/tobacco-consumption`);
-        const alcoholRes = await fetch(`http://localhost:5000/api/social-history/${patientId}/alcohol`);
-        const socialTextRes = await fetch(`http://localhost:5000/api/social-history/${patientId}/social-text`);
-        const financialRes = await fetch(`http://localhost:5000/api/social-history/${patientId}/financial-resources`);
-        const educationRes = await fetch(`http://localhost:5000/api/social-history/${patientId}/education`);
-        const physicalActivityRes = await fetch(`http://localhost:5000/api/social-history/${patientId}/physical-activity`);
-        const stressRes = await fetch(`http://localhost:5000/api/social-history/${patientId}/stress`);
-        const socialIsolationRes = await fetch(`http://localhost:5000/api/social-history/${patientId}/social-isolation`);
-        const exposureToViolenceRes = await fetch(`http://localhost:5000/api/social-history/${patientId}/exposure-to-violence`);
-        const genderIdentityRes = await fetch(`http://localhost:5000/api/social-history/${patientId}/gender-identity`);
-        const sexualOrientationRes = await fetch(`http://localhost:5000/api/social-history/${patientId}/sexual-orientation`);
-        const nutrientsRes = await fetch(`http://localhost:5000/api/social-history/${patientId}/nutrients-history`);
+        const tobaccoSmokingRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/tobacco-smoking`);
+        const tobaccoConsumptionRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/tobacco-consumption`);
+        const alcoholRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/alcohol`);
+        const socialTextRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/social-text`);
+        const financialRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/financial-resources`);
+        const educationRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/education`);
+        const physicalActivityRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/physical-activity`);
+        const stressRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/stress`);
+        const socialIsolationRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/social-isolation`);
+        const exposureToViolenceRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/exposure-to-violence`);
+        const genderIdentityRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/gender-identity`);
+        const sexualOrientationRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/sexual-orientation`);
+        const nutrientsRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/nutrients-history`);
 
         const results = await Promise.all([
           tobaccoSmokingRes.ok ? tobaccoSmokingRes.json() : null,

@@ -25,7 +25,7 @@ const ExposureToViolence = ({ onClose }) => {
 
       try {
         console.log("Fetching exposure to violence data for patient:", patientId);
-        const response = await fetch(`http://localhost:5000/api/social-history/${patientId}/exposure-to-violence`);
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/exposure-to-violence`);
         
         console.log("Response status:", response.status);
         
@@ -90,9 +90,9 @@ const ExposureToViolence = ({ onClose }) => {
       };
 
       console.log('Sending exposure to violence data:', violenceData);
-      console.log('To URL:', `http://localhost:5000/api/social-history/${patientId}/exposure-to-violence`);
+      console.log('To URL:', `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/exposure-to-violence`);
 
-      const response = await fetch(`http://localhost:5000/api/social-history/${patientId}/exposure-to-violence`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/exposure-to-violence`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(violenceData),

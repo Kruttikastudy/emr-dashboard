@@ -24,7 +24,7 @@ const SocialIsolation = ({ onClose }) => {
 
       try {
         const response = await fetch(
-          `http://localhost:5000/api/social-history/${patientId}/social-isolation`
+          `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/social-isolation`
         );
         const data = await response.json();
         
@@ -84,7 +84,7 @@ const SocialIsolation = ({ onClose }) => {
 
       // Save to backend using patientId
       const response = await fetch(
-        `http://localhost:5000/api/social-history/${patientId}/social-isolation`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/social-isolation`,
         {
           method: 'POST',
           headers: {
@@ -126,7 +126,7 @@ const SocialIsolation = ({ onClose }) => {
     // Re-fetch data to reset form
     try {
       const response = await fetch(
-        `http://localhost:5000/api/social-history/${patientId}/social-isolation`
+        `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/social-isolation`
       );
       const data = await response.json();
       

@@ -28,7 +28,7 @@ const AlcoholUse = ({ onClose }) => {
 
       try {
         const res = await fetch(
-          `http://localhost:5000/api/social-history/${patientId}/alcohol`
+          `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/alcohol`
         );
 
         if (!res.ok) {
@@ -101,7 +101,7 @@ const AlcoholUse = ({ onClose }) => {
       const method = existingData ? "PUT" : "POST";
       
       const res = await fetch(
-        `http://localhost:5000/api/social-history/${patientId}/alcohol`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/alcohol`,
         {
           method: method,
           headers: { "Content-Type": "application/json" },

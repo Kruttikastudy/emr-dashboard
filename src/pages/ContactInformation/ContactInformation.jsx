@@ -47,7 +47,7 @@ const ContactInformation = () => {
       if (!patientId) return;
 
       try {
-        const response = await fetch(`http://localhost:5000/api/contact-information/${patientId}`);
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/contact-information/${patientId}`);
         if (response.ok) {
           const json = await response.json();
           if (json.success && json.data?.contact_info) {
@@ -225,7 +225,7 @@ const ContactInformation = () => {
       console.log('Sending data:', JSON.stringify(dataToSend, null, 2));
 
       // Use PUT for updates
-      const response = await fetch(`http://localhost:5000/api/contact-information/${patientId}`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/contact-information/${patientId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dataToSend)

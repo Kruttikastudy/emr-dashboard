@@ -31,7 +31,7 @@ export default function Consent() {
       
       try {
         // Fetch patient demographics
-        const patientRes = await fetch(`http://localhost:5000/api/patient-demographics/${patientId}`);
+        const patientRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/patient-demographics/${patientId}`);
         if (patientRes.ok) {
           const patientJson = await patientRes.json();
           if (patientJson.success && patientJson.data) {
@@ -44,7 +44,7 @@ export default function Consent() {
 
       try {
         // Fetch contact information
-        const contactRes = await fetch(`http://localhost:5000/api/contact-information/${patientId}`);
+        const contactRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/contact-information/${patientId}`);
         if (contactRes.ok) {
           const contactJson = await contactRes.json();
           if (contactJson.success && contactJson.data) {
@@ -127,25 +127,6 @@ export default function Consent() {
     }
 
     try {
-      // You can add API call here to save consent data
-      // const response = await fetch(`http://localhost:5000/api/consent/${patientId}`, {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({
-      //     agreed: true,
-      //     timestamp: new Date().toISOString()
-      //   })
-      // });
-      
-      // if (response.ok) {
-      //   alert('Consent saved successfully!');
-      //   navigate('/nurse-dashboard');
-      // } else {
-      //   alert('Failed to save consent. Please try again.');
-      // }
-
       alert('Consent saved successfully!');
       navigate('/nurse-dashboard');
     } catch (error) {

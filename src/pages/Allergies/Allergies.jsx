@@ -53,7 +53,7 @@ useEffect(() => {
     if (!patientId) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/allergies/${patientId}`);
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/allergies/${patientId}`);
       if (!response.ok) return;
 
       const json = await response.json();
@@ -113,7 +113,7 @@ useEffect(() => {
         return;
       }
 
-      const response = await fetch('http://localhost:5000/api/allergies', {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/allergies`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

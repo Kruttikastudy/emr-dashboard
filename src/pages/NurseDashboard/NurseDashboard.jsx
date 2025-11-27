@@ -23,7 +23,7 @@ const NurseDashboard = () => {
 
     try {
       // Fetch all patients
-      const patientsResponse = await fetch('http://localhost:5000/api/patients', {
+      const patientsResponse = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/patients`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ const NurseDashboard = () => {
       setPatients(mappedPatients);
 
       // Fetch recent visits
-      const visitsResponse = await fetch('http://localhost:5000/api/visits');
+      const visitsResponse = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/visits`);
       if (!visitsResponse.ok) {
         throw new Error('Failed to fetch visits');
       }
@@ -66,7 +66,7 @@ const NurseDashboard = () => {
       setRecentVisits(sortedVisits);
 
       // Fetch upcoming appointments
-      const appointmentsResponse = await fetch('http://localhost:5000/api/appointments');
+      const appointmentsResponse = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/appointments`);
       if (!appointmentsResponse.ok) {
         throw new Error('Failed to fetch appointments');
       }

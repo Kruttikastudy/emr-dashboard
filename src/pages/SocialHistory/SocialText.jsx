@@ -23,7 +23,7 @@ const SocialText = ({ onClose }) => {
 
       try {
         const response = await fetch(
-          `http://localhost:5000/api/social-history/${patientId}/social-text`
+          `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/social-text`
         );
         
         if (response.ok) {
@@ -82,7 +82,7 @@ const SocialText = ({ onClose }) => {
 
       // Save to backend using patientId
       const response = await fetch(
-        `http://localhost:5000/api/social-history/${patientId}/social-text`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/social-text`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

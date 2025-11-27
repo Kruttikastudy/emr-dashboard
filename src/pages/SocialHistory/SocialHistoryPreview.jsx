@@ -50,7 +50,7 @@ const SocialHistoryPreview = () => {
 
     const fetchSection = async (path, mapFn) => {
       try {
-        const res = await fetch(`http://localhost:5000/api/social-history/${patientId}/${path}`);
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/${path}`);
         if (!res.ok) return null;
         const body = await safeJson(res);
         if (!body || !body.success || !body.data) return null;

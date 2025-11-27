@@ -23,7 +23,7 @@ const SexualOrientation = ({ onClose }) => {
 
       try {
         console.log("Fetching sexual orientation data for patient:", patientId);
-        const response = await fetch(`http://localhost:5000/api/social-history/${patientId}/sexual-orientation`);
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/sexual-orientation`);
         
         console.log("Response status:", response.status);
         
@@ -79,9 +79,9 @@ const SexualOrientation = ({ onClose }) => {
       };
 
       console.log('Sending sexual orientation data:', orientationData);
-      console.log('To URL:', `http://localhost:5000/api/social-history/${patientId}/sexual-orientation`);
+      console.log('To URL:', `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/sexual-orientation`);
 
-      const response = await fetch(`http://localhost:5000/api/social-history/${patientId}/sexual-orientation`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/sexual-orientation`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orientationData),

@@ -4,7 +4,7 @@ import axios from 'axios';
 import './NewVisit.css';
 import logo from "../../assets/logo.jpg";
 
-axios.defaults.baseURL = 'http://localhost:5000';
+axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 
 const emptyMedRow = () => ({
   problem: "",

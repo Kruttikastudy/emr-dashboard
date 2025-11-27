@@ -25,7 +25,7 @@ const Stress = ({ onClose }) => {
 
       try {
         console.log("Fetching stress data for patient:", patientId);
-        const response = await fetch(`http://localhost:5000/api/social-history/${patientId}/stress`);
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/stress`);
         
         console.log("Response status:", response.status);
         
@@ -85,9 +85,9 @@ const Stress = ({ onClose }) => {
       };
 
       console.log('Sending stress data:', stressData);
-      console.log('To URL:', `http://localhost:5000/api/social-history/${patientId}/stress`);
+      console.log('To URL:', `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/stress`);
 
-      const response = await fetch(`http://localhost:5000/api/social-history/${patientId}/stress`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/stress`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(stressData),

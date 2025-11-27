@@ -28,7 +28,7 @@ const TobaccoUse = ({ onClose }) => {
 
       try {
         const response = await fetch(
-          `http://localhost:5000/api/social-history/${patientId}/tobacco-smoking`
+          `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/tobacco-smoking`
         );
 
         const contentType = response.headers.get("content-type");
@@ -94,7 +94,7 @@ const TobaccoUse = ({ onClose }) => {
       console.log("Sending tobacco smoking data:", payload);
 
       const response = await fetch(
-        `http://localhost:5000/api/social-history/${patientId}/tobacco-smoking`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/tobacco-smoking`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

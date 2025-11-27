@@ -26,7 +26,7 @@ const FinancialResources = ({ onClose }) => {
 
       try {
         const response = await fetch(
-          `http://localhost:5000/api/social-history/${patientId}/financial-resources`
+          `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/financial-resources`
         );
         
         if (response.ok) {
@@ -91,7 +91,7 @@ const FinancialResources = ({ onClose }) => {
 
       // Save to backend using patientId
       const response = await fetch(
-        `http://localhost:5000/api/social-history/${patientId}/financial-resources`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/financial-resources`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

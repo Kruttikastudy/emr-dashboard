@@ -26,7 +26,7 @@ const PatientDetail = () => {
 
     try {
       // Fetch patient demographics
-      const patientRes = await fetch(`http://localhost:5000/api/patient-demographics/${id}`);
+      const patientRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/patient-demographics/${id}`);
       if (patientRes.ok) {
         const patientJson = await patientRes.json();
         if (patientJson.success && patientJson.data) {
@@ -36,7 +36,7 @@ const PatientDetail = () => {
 
       // Fetch contact information
       try {
-        const contactRes = await fetch(`http://localhost:5000/api/contact-information/${id}`);
+        const contactRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/contact-information/${id}`);
         if (contactRes.ok) {
           const contactJson = await contactRes.json();
           if (contactJson.success && contactJson.data) {
@@ -49,7 +49,7 @@ const PatientDetail = () => {
 
       // Fetch insurance information
       try {
-        const insuranceRes = await fetch(`http://localhost:5000/api/insurance/${id}`);
+        const insuranceRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/insurance/${id}`);
         if (insuranceRes.ok) {
           const insuranceJson = await insuranceRes.json();
           if (insuranceJson.insurance) {
@@ -62,7 +62,7 @@ const PatientDetail = () => {
 
       // Fetch allergies
       try {
-        const allergiesRes = await fetch(`http://localhost:5000/api/allergies/${id}`);
+        const allergiesRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/allergies/${id}`);
         if (allergiesRes.ok) {
           const allergiesJson = await allergiesRes.json();
           if (allergiesJson.success) {
@@ -75,7 +75,7 @@ const PatientDetail = () => {
 
       // Fetch family history
       try {
-        const familyHistoryRes = await fetch(`http://localhost:5000/api/family-history/${id}`);
+        const familyHistoryRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/family-history/${id}`);
         if (familyHistoryRes.ok) {
           const familyHistoryJson = await familyHistoryRes.json();
           if (familyHistoryJson.success) {
@@ -103,19 +103,19 @@ const PatientDetail = () => {
           sexualOrientationRes,
           nutrientsRes
         ] = await Promise.all([
-          fetch(`http://localhost:5000/api/social-history/${id}/tobacco-smoking`),
-          fetch(`http://localhost:5000/api/social-history/${id}/tobacco-consumption`),
-          fetch(`http://localhost:5000/api/social-history/${id}/alcohol`),
-          fetch(`http://localhost:5000/api/social-history/${id}/social-text`),
-          fetch(`http://localhost:5000/api/social-history/${id}/financial-resources`),
-          fetch(`http://localhost:5000/api/social-history/${id}/education`),
-          fetch(`http://localhost:5000/api/social-history/${id}/physical-activity`),
-          fetch(`http://localhost:5000/api/social-history/${id}/stress`),
-          fetch(`http://localhost:5000/api/social-history/${id}/social-isolation`),
-          fetch(`http://localhost:5000/api/social-history/${id}/exposure-to-violence`),
-          fetch(`http://localhost:5000/api/social-history/${id}/gender-identity`),
-          fetch(`http://localhost:5000/api/social-history/${id}/sexual-orientation`),
-          fetch(`http://localhost:5000/api/social-history/${id}/nutrients-history`)
+          fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${id}/tobacco-smoking`),
+          fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${id}/tobacco-consumption`),
+          fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${id}/alcohol`),
+          fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${id}/social-text`),
+          fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${id}/financial-resources`),
+          fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${id}/education`),
+          fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${id}/physical-activity`),
+          fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${id}/stress`),
+          fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${id}/social-isolation`),
+          fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${id}/exposure-to-violence`),
+          fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${id}/gender-identity`),
+          fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${id}/sexual-orientation`),
+          fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${id}/nutrients-history`)
         ]);
 
         const results = await Promise.all([

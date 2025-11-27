@@ -33,7 +33,7 @@ React.useEffect(() => {
     if (!patientId) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/family-history/${patientId}`);
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/family-history/${patientId}`);
       if (!response.ok) return;
 
       const json = await response.json();
@@ -158,7 +158,7 @@ React.useEffect(() => {
     
     try {
       // ✅ Use patientId from localStorage in the API call
-      const response = await fetch(`http://localhost:5000/api/family-history/${patientId}`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/family-history/${patientId}`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

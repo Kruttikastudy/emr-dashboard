@@ -28,7 +28,7 @@ const PhysicalActivity = ({ onClose }) => {
 
       try {
         const response = await fetch(
-          `http://localhost:5000/api/social-history/${patientId}/physical-activity`
+          `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/physical-activity`
         );
         
         if (response.ok) {
@@ -97,7 +97,7 @@ const PhysicalActivity = ({ onClose }) => {
 
       // Save to backend using patientId
       const response = await fetch(
-        `http://localhost:5000/api/social-history/${patientId}/physical-activity`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/physical-activity`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

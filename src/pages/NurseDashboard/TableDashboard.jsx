@@ -20,7 +20,7 @@ const TableDashboard = () => {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:5000/api/appointments');
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/appointments`);
       if (!response.ok) {
         throw new Error('Failed to fetch appointments');
       }
@@ -54,15 +54,6 @@ const TableDashboard = () => {
           apt._id === appointmentId ? { ...apt, status: newStatus } : apt
         )
       );
-
-      // Optional: Update in database if you have an update endpoint
-      // await fetch(`http://localhost:5000/api/appointments/${appointmentId}`, {
-      //   method: 'PATCH',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({ status: newStatus }),
-      // });
 
     } catch (err) {
       console.error('Error updating status:', err);

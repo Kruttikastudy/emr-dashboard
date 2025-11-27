@@ -4,7 +4,7 @@ import { useNavigate, Link, useLocation } from "react-router-dom";
 import axios from 'axios';
 import logo from "../../assets/logo.jpg";
 
-axios.defaults.baseURL = 'http://localhost:5000';
+axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 
 const NewAppointment = () => {
   const navigate = useNavigate();
