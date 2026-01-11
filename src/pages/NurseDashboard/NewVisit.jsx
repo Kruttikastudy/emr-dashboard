@@ -28,6 +28,7 @@ const NewVisit = () => {
   const [medications, setMedications] = useState([emptyMedRow()]);
   const [formData, setFormData] = useState({
     visitType: location.state?.visitType || 'Emergency Visit',
+    patientId: '',
     patientName: '',
     chiefComplaints: '',
     height: '',
@@ -96,10 +97,11 @@ const NewVisit = () => {
   // Load visit data into form
   const loadVisitData = (visit) => {
     setCurrentVisitId(visit._id);
-    
+
     // Load basic form data
     setFormData({
       visitType: visit.visit_type || 'Emergency Visit',
+      patientId: visit.patient_id || '',
       patientName: visit.patient_name || '',
       chiefComplaints: visit.chief_complaints || '',
       height: visit.vitals?.height || '',
@@ -161,14 +163,14 @@ const NewVisit = () => {
   };
 
   const addMedRow = () => setMedications((prev) => [...prev, emptyMedRow()]);
-  
+
   const removeMedRow = (index) =>
     setMedications((prev) => (prev.length === 1 ? prev : prev.filter((_, i) => i !== index)));
 
   const nextStep = () => {
     if (currentStep === 1) {
-      if (!formData.patientName) {
-        alert('Please fill in Patient Name');
+      if (!formData.patientName || !formData.patientId) {
+        alert('Please fill in Patient Name and Patient ID');
         return;
       }
     }
@@ -190,6 +192,7 @@ const NewVisit = () => {
     setCurrentVisitId(null);
     setFormData({
       visitType: 'Emergency Visit',
+      patientId: '',
       patientName: '',
       chiefComplaints: '',
       height: '',
@@ -218,33 +221,33 @@ const NewVisit = () => {
   };
 
   const isFormMinimal = () => {
-    return formData.patientName && 
-           !formData.chiefComplaints &&
-           !formData.height &&
-           !formData.weight &&
-           !formData.bloodPressure &&
-           !formData.investigationRequest &&
-           !formData.treatment &&
-           medications.every(m => !m.problem && !m.medicine && !m.mg);
+    return formData.patientName && formData.patientId &&
+      !formData.chiefComplaints &&
+      !formData.height &&
+      !formData.weight &&
+      !formData.bloodPressure &&
+      !formData.investigationRequest &&
+      !formData.treatment &&
+      medications.every(m => !m.problem && !m.medicine && !m.mg);
   };
 
   const handleSubmit = async (status = 'saved') => {
-    if (!formData.patientName) {
-      alert('Patient Name is required');
+    if (!formData.patientName || !formData.patientId) {
+      alert('Patient Name and Patient ID are required');
       return;
     }
 
     setLoading(true);
-    
+
     try {
       let visitStatus = status === 'complete' ? 'complete' : 'saved';
-      
+
       if (isFormMinimal() && status !== 'complete') {
         visitStatus = 'pending';
       }
 
       const visitData = {
-        visit_type: formData.visitType,
+        visit_type: formData.visitType, patient_id: formData.patientId,
         patient_name: formData.patientName,
         chief_complaints: formData.chiefComplaints,
         vitals: {
@@ -293,10 +296,10 @@ const NewVisit = () => {
       } else {
         // Create new visit
         response = await axios.post('/api/visits', visitData);
-        const statusMessage = visitStatus === 'pending' 
-          ? 'saved as pending (incomplete information)' 
-          : visitStatus === 'complete' 
-            ? 'saved and marked complete' 
+        const statusMessage = visitStatus === 'pending'
+          ? 'saved as pending (incomplete information)'
+          : visitStatus === 'complete'
+            ? 'saved and marked complete'
             : 'saved';
         alert(`Visit ${statusMessage} successfully!`);
       }
@@ -304,7 +307,7 @@ const NewVisit = () => {
       if (response.data.success) {
         // Refresh visits list
         fetchVisits();
-        
+
         // Reset form
         handleNewVisit();
       }
@@ -364,9 +367,9 @@ const NewVisit = () => {
           </div>
 
           <div className="search-box">
-            <input 
-              type="text" 
-              placeholder="Search Visits" 
+            <input
+              type="text"
+              placeholder="Search Visits"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -387,7 +390,7 @@ const NewVisit = () => {
                   <div className="patient-details">
                     <div className="patient-name">{visit.patient_name}</div>
                     <div style={{ fontSize: '0.85em', color: '#666' }}>
-                      ID: {visit._id?.slice(-6)}
+                      ID: {visit.patient_id || visit._id?.slice(-6)}
                     </div>
                     <div style={{ fontSize: '0.8em', color: '#999' }}>
                       {visit.createdAt ? formatVisitTime(visit.createdAt) : ''}
@@ -404,8 +407,8 @@ const NewVisit = () => {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <h2 className="page-title">{currentVisitId ? 'Edit Visit' : 'New Visit'}</h2>
             {currentVisitId && (
-              <button 
-                className="btn-outline" 
+              <button
+                className="btn-outline"
                 onClick={handleNewVisit}
                 style={{ padding: '8px 16px' }}
               >
@@ -419,7 +422,7 @@ const NewVisit = () => {
             <>
               <div className="form-card">
                 <div className="form-group">
-                  <label>Visit Type <span style={{color: 'red'}}>*</span></label>
+                  <label>Visit Type <span style={{ color: 'red' }}>*</span></label>
                   <select
                     value={formData.visitType}
                     onChange={(e) => handleInputChange('visitType', e.target.value)}
@@ -429,7 +432,18 @@ const NewVisit = () => {
                 </div>
 
                 <div className="form-group">
-                  <label>Patient Name <span style={{color: 'red'}}>*</span></label>
+                  <label>Patient ID <span style={{ color: 'red' }}>*</span></label>
+                  <input
+                    type="text"
+                    value={formData.patientId}
+                    onChange={(e) => handleInputChange('patientId', e.target.value)}
+                    placeholder="Enter patient ID"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Patient Name <span style={{ color: 'red' }}>*</span></label>
                   <input
                     type="text"
                     value={formData.patientName}
@@ -455,11 +469,11 @@ const NewVisit = () => {
                     <div className="vital-item">
                       <label>Height</label>
                       <div className="input-unit">
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           step="0.1"
-                          value={formData.height} 
-                          onChange={(e) => handleInputChange('height', e.target.value)} 
+                          value={formData.height}
+                          onChange={(e) => handleInputChange('height', e.target.value)}
                           placeholder="0.0"
                         />
                         <span>ft</span>
@@ -468,10 +482,10 @@ const NewVisit = () => {
                     <div className="vital-item">
                       <label>RR</label>
                       <div className="input-unit">
-                        <input 
-                          type="number" 
-                          value={formData.respiratoryRate} 
-                          onChange={(e) => handleInputChange('respiratoryRate', e.target.value)} 
+                        <input
+                          type="number"
+                          value={formData.respiratoryRate}
+                          onChange={(e) => handleInputChange('respiratoryRate', e.target.value)}
                           placeholder="0"
                         />
                         <span>bpm</span>
@@ -480,11 +494,11 @@ const NewVisit = () => {
                     <div className="vital-item">
                       <label>Weight</label>
                       <div className="input-unit">
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           step="0.1"
-                          value={formData.weight} 
-                          onChange={(e) => handleInputChange('weight', e.target.value)} 
+                          value={formData.weight}
+                          onChange={(e) => handleInputChange('weight', e.target.value)}
                           placeholder="0.0"
                         />
                         <span>kg</span>
@@ -493,11 +507,11 @@ const NewVisit = () => {
                     <div className="vital-item">
                       <label>Oxygen%</label>
                       <div className="input-unit">
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           step="0.1"
-                          value={formData.oxygenSaturation} 
-                          onChange={(e) => handleInputChange('oxygenSaturation', e.target.value)} 
+                          value={formData.oxygenSaturation}
+                          onChange={(e) => handleInputChange('oxygenSaturation', e.target.value)}
                           placeholder="0.0"
                         />
                         <span>%</span>
@@ -505,21 +519,21 @@ const NewVisit = () => {
                     </div>
                     <div className="vital-item">
                       <label>Blood pressure</label>
-                      <input 
-                        type="text" 
-                        value={formData.bloodPressure} 
-                        onChange={(e) => handleInputChange('bloodPressure', e.target.value)} 
+                      <input
+                        type="text"
+                        value={formData.bloodPressure}
+                        onChange={(e) => handleInputChange('bloodPressure', e.target.value)}
                         placeholder="120/80"
                       />
                     </div>
                     <div className="vital-item">
                       <label>Temperature</label>
                       <div className="input-unit">
-                        <input 
-                          type="number" 
+                        <input
+                          type="number"
                           step="0.1"
-                          value={formData.temperature} 
-                          onChange={(e) => handleInputChange('temperature', e.target.value)} 
+                          value={formData.temperature}
+                          onChange={(e) => handleInputChange('temperature', e.target.value)}
                           placeholder="98.6"
                         />
                         <span>F</span>
@@ -528,10 +542,10 @@ const NewVisit = () => {
                     <div className="vital-item">
                       <label>Pulse</label>
                       <div className="input-unit">
-                        <input 
-                          type="number" 
-                          value={formData.pulse} 
-                          onChange={(e) => handleInputChange('pulse', e.target.value)} 
+                        <input
+                          type="number"
+                          value={formData.pulse}
+                          onChange={(e) => handleInputChange('pulse', e.target.value)}
                           placeholder="0"
                         />
                         <span>bpm</span>
@@ -542,10 +556,10 @@ const NewVisit = () => {
 
                 <div className="form-group">
                   <label>Notes</label>
-                  <textarea 
-                    value={formData.notes} 
-                    onChange={(e) => handleInputChange('notes', e.target.value)} 
-                    rows="4" 
+                  <textarea
+                    value={formData.notes}
+                    onChange={(e) => handleInputChange('notes', e.target.value)}
+                    rows="4"
                     placeholder="Additional notes..."
                   />
                 </div>
@@ -558,20 +572,20 @@ const NewVisit = () => {
             <div className="form-card">
               <div className="form-group">
                 <label>Investigation Request</label>
-                <textarea 
-                  value={formData.investigationRequest} 
-                  onChange={(e) => handleInputChange('investigationRequest', e.target.value)} 
-                  rows="2" 
+                <textarea
+                  value={formData.investigationRequest}
+                  onChange={(e) => handleInputChange('investigationRequest', e.target.value)}
+                  rows="2"
                   placeholder="Enter investigation requests..."
                 />
               </div>
 
               <div className="form-group">
                 <label>Investigation Result</label>
-                <textarea 
-                  value={formData.investigationResult} 
-                  onChange={(e) => handleInputChange('investigationResult', e.target.value)} 
-                  rows="2" 
+                <textarea
+                  value={formData.investigationResult}
+                  onChange={(e) => handleInputChange('investigationResult', e.target.value)}
+                  rows="2"
                   placeholder="Enter investigation results..."
                 />
               </div>
@@ -579,27 +593,27 @@ const NewVisit = () => {
               <div className="form-group">
                 <h3>Diagnosis</h3>
                 <p className="helper-text">Condition</p>
-                <input 
-                  type="text" 
-                  value={formData.icdQuickest} 
-                  onChange={(e) => handleInputChange('icdQuickest', e.target.value)} 
+                <input
+                  type="text"
+                  value={formData.icdQuickest}
+                  onChange={(e) => handleInputChange('icdQuickest', e.target.value)}
                   placeholder="Enter ICD-10 code"
                 />
                 <p className="helper-text">Full ICD-10 List</p>
-                <input 
-                  type="text" 
-                  value={formData.icdFull} 
-                  onChange={(e) => handleInputChange('icdFull', e.target.value)} 
+                <input
+                  type="text"
+                  value={formData.icdFull}
+                  onChange={(e) => handleInputChange('icdFull', e.target.value)}
                   placeholder="Enter full ICD-10 list"
                 />
               </div>
 
               <div className="form-group">
                 <label>Treatment</label>
-                <textarea 
-                  value={formData.treatment} 
-                  onChange={(e) => handleInputChange('treatment', e.target.value)} 
-                  rows="2" 
+                <textarea
+                  value={formData.treatment}
+                  onChange={(e) => handleInputChange('treatment', e.target.value)}
+                  rows="2"
                   placeholder="Enter treatment plan..."
                 />
               </div>
@@ -748,57 +762,57 @@ const NewVisit = () => {
             <div className="form-card">
               <div className="form-group">
                 <label>Follow-up Appointment</label>
-                <input 
-                  type="date" 
-                  value={formData.followUpDate} 
-                  onChange={(e) => handleInputChange('followUpDate', e.target.value)} 
+                <input
+                  type="date"
+                  value={formData.followUpDate}
+                  onChange={(e) => handleInputChange('followUpDate', e.target.value)}
                 />
               </div>
 
               <div className="form-group">
                 <label>Total Cost</label>
-                <input 
-                  type="number" 
-                  min="0" 
+                <input
+                  type="number"
+                  min="0"
                   step="0.01"
-                  value={formData.totalCost} 
-                  onChange={(e) => handleInputChange('totalCost', e.target.value)} 
+                  value={formData.totalCost}
+                  onChange={(e) => handleInputChange('totalCost', e.target.value)}
                   placeholder="0.00"
                 />
               </div>
 
               <div className="form-group">
                 <label>Amount Paid</label>
-                <input 
-                  type="number" 
-                  min="0" 
+                <input
+                  type="number"
+                  min="0"
                   step="0.01"
-                  value={formData.amountPaid} 
-                  onChange={(e) => handleInputChange('amountPaid', e.target.value)} 
+                  value={formData.amountPaid}
+                  onChange={(e) => handleInputChange('amountPaid', e.target.value)}
                   placeholder="0.00"
                 />
               </div>
 
               <div className="form-group">
                 <label>Balance Amount</label>
-                <input 
-                  type="text" 
-                  value={displayBalance} 
-                  onChange={(e) => handleInputChange('balanceAmount', e.target.value)} 
-                  placeholder="Auto-calculated" 
+                <input
+                  type="text"
+                  value={displayBalance}
+                  onChange={(e) => handleInputChange('balanceAmount', e.target.value)}
+                  placeholder="Auto-calculated"
                 />
               </div>
 
               <div className="form-actions-row">
-                <button 
-                  className="btn-save" 
+                <button
+                  className="btn-save"
                   onClick={() => handleSubmit('saved')}
                   disabled={loading}
                 >
                   {loading ? 'Saving...' : currentVisitId ? 'Update' : 'Save'}
                 </button>
-                <button 
-                  className="btn-complete" 
+                <button
+                  className="btn-complete"
                   onClick={() => handleSubmit('complete')}
                   disabled={loading}
                 >

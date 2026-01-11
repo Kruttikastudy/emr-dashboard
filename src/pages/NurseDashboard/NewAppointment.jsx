@@ -15,6 +15,7 @@ const NewAppointment = () => {
   const [appointments, setAppointments] = useState([]);
   const [currentAppointmentId, setCurrentAppointmentId] = useState(null);
   const [formData, setFormData] = useState({
+    patientId: '',
     firstName: '',
     middleName: '',
     lastName: '',
@@ -46,6 +47,7 @@ const NewAppointment = () => {
       const { patientData } = location.state;
       setFormData(prevData => ({
         ...prevData,
+        patientId: patientData.patientId || '',
         firstName: patientData.firstName || '',
         middleName: patientData.middleName || '',
         lastName: patientData.lastName || '',
@@ -72,9 +74,10 @@ const NewAppointment = () => {
   // Load appointment data into form
   const loadAppointmentData = (appointment) => {
     setCurrentAppointmentId(appointment._id);
-    
+
     // Load appointment data into form
     setFormData({
+      patientId: appointment.patient_id || '',
       firstName: appointment.patient_name?.first || '',
       middleName: appointment.patient_name?.middle || '',
       lastName: appointment.patient_name?.last || '',
@@ -104,13 +107,13 @@ const NewAppointment = () => {
       const [time, period] = timeString.split(' ');
       let [hours, minutes] = time.split(':');
       hours = parseInt(hours);
-      
+
       if (period === 'PM' && hours !== 12) {
         hours += 12;
       } else if (period === 'AM' && hours === 12) {
         hours = 0;
       }
-      
+
       return `${hours.toString().padStart(2, '0')}:${minutes}`;
     } catch (e) {
       return '';
@@ -120,6 +123,7 @@ const NewAppointment = () => {
   const handleNewAppointment = () => {
     setCurrentAppointmentId(null);
     setFormData({
+      patientId: '',
       firstName: '',
       middleName: '',
       lastName: '',
@@ -137,9 +141,9 @@ const NewAppointment = () => {
 
   const handleDone = async () => {
     // Validate required fields
-    if (!formData.firstName || !formData.lastName || !formData.age || 
-        !formData.contactInfo || !formData.date || !formData.time) {
-      alert('Please fill in all required fields: First Name, Last Name, Age, Contact Information, Date, and Time');
+    if (!formData.patientId || !formData.firstName || !formData.lastName || !formData.age ||
+      !formData.contactInfo || !formData.date || !formData.time) {
+      alert('Please fill in all required fields: Patient ID, First Name, Last Name, Age, Contact Information, Date, and Time');
       return;
     }
 
@@ -159,6 +163,7 @@ const NewAppointment = () => {
 
     try {
       const appointmentData = {
+        patient_id: formData.patientId,
         firstName: formData.firstName,
         middleName: formData.middleName,
         lastName: formData.lastName,
@@ -186,10 +191,10 @@ const NewAppointment = () => {
 
       if (response.data.success) {
         console.log('Appointment ID:', response.data.appointmentId);
-        
+
         // Refresh appointments list
         fetchAppointments();
-        
+
         // Reset form
         handleNewAppointment();
       }
@@ -240,7 +245,7 @@ const NewAppointment = () => {
       <div className="medapp-main-content">
         {/* Left Panel - Appointment Search */}
         <div className="medapp-left-panel">
-          
+
           {/* Add New Patient button */}
           <div className="medapp-add-patient-container">
             <Link to="/nurse-dashboard" className="nv-logo">
@@ -261,14 +266,14 @@ const NewAppointment = () => {
             />
             <button className="medapp-search-btn">🔍</button>
           </div>
-          
+
           <div className="medapp-patient-list">
             {filteredAppointments.map((appointment) => {
               const firstName = appointment.patient_name?.first || '';
               const lastName = appointment.patient_name?.last || '';
               const fullName = `${firstName} ${lastName}`.trim();
               const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
-              
+
               return (
                 <div
                   key={appointment._id}
@@ -280,7 +285,7 @@ const NewAppointment = () => {
                   <div style={{ flex: 1 }}>
                     <div className="medapp-patient-name">{fullName}</div>
                     <div style={{ fontSize: '0.85em', color: '#666' }}>
-                      ID: {appointment._id?.slice(-6)}
+                      ID: {appointment.patient_id || appointment._id?.slice(-6)}
                     </div>
                     <div style={{ fontSize: '0.8em', color: '#999' }}>
                       {formatAppointmentDateTime(appointment.appointment_date, appointment.appointment_time)}
@@ -298,8 +303,8 @@ const NewAppointment = () => {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <h2 className="page-title">{currentAppointmentId ? 'Edit Appointment' : 'New Appointment'}</h2>
             {currentAppointmentId && (
-              <button 
-                className="btn-outline" 
+              <button
+                className="btn-outline"
                 onClick={handleNewAppointment}
                 style={{ padding: '8px 16px' }}
               >
@@ -310,11 +315,25 @@ const NewAppointment = () => {
 
           <div className="medapp-form-section">
             <h3 className="medapp-section-title">Patient Information</h3>
-            
+
             <div className="medapp-form-row">
               <div className="medapp-form-group">
                 <label className="medapp-label">
-                  First Name <span style={{color: 'red'}}>*</span>
+                  Patient ID <span style={{ color: 'red' }}>*</span>
+                </label>
+                <input
+                  type="text"
+                  name="patientId"
+                  value={formData.patientId}
+                  onChange={handleInputChange}
+                  className="medapp-input"
+                  placeholder=""
+                  required
+                />
+              </div>
+              <div className="medapp-form-group">
+                <label className="medapp-label">
+                  First Name <span style={{ color: 'red' }}>*</span>
                 </label>
                 <input
                   type="text"
@@ -339,7 +358,7 @@ const NewAppointment = () => {
               </div>
               <div className="medapp-form-group">
                 <label className="medapp-label">
-                  Last Name <span style={{color: 'red'}}>*</span>
+                  Last Name <span style={{ color: 'red' }}>*</span>
                 </label>
                 <input
                   type="text"
@@ -356,7 +375,7 @@ const NewAppointment = () => {
             <div className="medapp-form-row">
               <div className="medapp-form-group">
                 <label className="medapp-label">
-                  Age <span style={{color: 'red'}}>*</span>
+                  Age <span style={{ color: 'red' }}>*</span>
                 </label>
                 <input
                   type="number"
@@ -371,7 +390,7 @@ const NewAppointment = () => {
               </div>
               <div className="medapp-form-group medapp-contact-group">
                 <label className="medapp-label">
-                  Contact Information <span style={{color: 'red'}}>*</span>
+                  Contact Information <span style={{ color: 'red' }}>*</span>
                 </label>
                 <input
                   type="text"
@@ -389,11 +408,11 @@ const NewAppointment = () => {
 
           <div className="medapp-form-section">
             <h3 className="medapp-section-title">Appointment Details</h3>
-            
+
             <div className="medapp-form-row">
               <div className="medapp-form-group">
                 <label className="medapp-label">
-                  Date <span style={{color: 'red'}}>*</span>
+                  Date <span style={{ color: 'red' }}>*</span>
                 </label>
                 <input
                   type="date"
@@ -406,7 +425,7 @@ const NewAppointment = () => {
               </div>
               <div className="medapp-form-group">
                 <label className="medapp-label">
-                  Time <span style={{color: 'red'}}>*</span>
+                  Time <span style={{ color: 'red' }}>*</span>
                 </label>
                 <input
                   type="time"
@@ -513,8 +532,8 @@ const NewAppointment = () => {
           </div>
 
           <div className="medapp-form-actions">
-            <button 
-              className="medapp-done-btn" 
+            <button
+              className="medapp-done-btn"
               onClick={handleDone}
               disabled={loading}
             >
