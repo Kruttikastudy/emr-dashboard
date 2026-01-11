@@ -120,6 +120,55 @@ const NewAppointment = () => {
     }
   };
 
+  const calculateAge = (dob) => {
+    if (!dob) return '';
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const handlePatientIdBlur = async () => {
+    if (!formData.patientId) return;
+
+    setLoading(true);
+    try {
+      const response = await axios.get(`/api/patient-demographics/${formData.patientId}`);
+      if (response.data.success && response.data.data) {
+        const patient = response.data.data;
+
+        // Also fetch contact info to be helpful
+        let contactInfo = '';
+        try {
+          const contactRes = await axios.get(`/api/contact-information/${formData.patientId}`);
+          if (contactRes.data.success && contactRes.data.data?.contact_info?.mobile?.number) {
+            contactInfo = contactRes.data.data.contact_info.mobile.number;
+          }
+        } catch (e) {
+          console.log('Could not fetch contact info');
+        }
+
+        setFormData(prev => ({
+          ...prev,
+          firstName: patient.name?.first || '',
+          middleName: patient.name?.middle || '',
+          lastName: patient.name?.last || '',
+          age: calculateAge(patient.date_of_birth),
+          contactInfo: contactInfo || prev.contactInfo
+        }));
+      }
+    } catch (error) {
+      console.error("Patient not found", error);
+      // We don't clear fields here to allow manual entry if ID is not found/invalid
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleNewAppointment = () => {
     setCurrentAppointmentId(null);
     setFormData({
@@ -326,6 +375,7 @@ const NewAppointment = () => {
                   name="patientId"
                   value={formData.patientId}
                   onChange={handleInputChange}
+                  onBlur={handlePatientIdBlur}
                   className="medapp-input"
                   placeholder=""
                   required

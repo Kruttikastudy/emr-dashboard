@@ -187,6 +187,28 @@ const NewVisit = () => {
     navigate('/dashboard/patient-demographics');
   };
 
+  const handlePatientIdBlur = async () => {
+    if (!formData.patientId) return;
+
+    setLoading(true);
+    try {
+      const response = await axios.get(`/api/patient-demographics/${formData.patientId}`);
+      if (response.data.success && response.data.data) {
+        const patient = response.data.data;
+        const fullName = `${patient.name?.first || ''} ${patient.name?.middle || ''} ${patient.name?.last || ''}`.replace(/\s+/g, ' ').trim();
+
+        setFormData(prev => ({
+          ...prev,
+          patientName: fullName
+        }));
+      }
+    } catch (error) {
+      console.error("Patient not found", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleNewVisit = () => {
     // Reset form for new visit
     setCurrentVisitId(null);
@@ -437,6 +459,7 @@ const NewVisit = () => {
                     type="text"
                     value={formData.patientId}
                     onChange={(e) => handleInputChange('patientId', e.target.value)}
+                    onBlur={handlePatientIdBlur}
                     placeholder="Enter patient ID"
                     required
                   />
