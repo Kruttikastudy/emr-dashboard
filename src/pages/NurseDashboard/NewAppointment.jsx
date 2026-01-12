@@ -190,7 +190,7 @@ const NewAppointment = () => {
 
   const handleDone = async () => {
     // Validate required fields
-    if (!formData.patientId || !formData.firstName || !formData.lastName || !formData.age ||
+    if (!formData.patientId || !formData.firstName || !formData.lastName || (formData.age === '' || formData.age === null || formData.age === undefined) ||
       !formData.contactInfo || !formData.date || !formData.time) {
       alert('Please fill in all required fields: Patient ID, First Name, Last Name, Age, Contact Information, Date, and Time');
       return;
@@ -203,7 +203,8 @@ const NewAppointment = () => {
     }
 
     // Validate age
-    if (formData.age <= 0) {
+    const ageNum = typeof formData.age === 'string' ? parseInt(formData.age) : formData.age;
+    if (isNaN(ageNum) || ageNum < 0) {
       alert('Please enter a valid age');
       return;
     }
@@ -597,3 +598,4 @@ const NewAppointment = () => {
 };
 
 export default NewAppointment;
+

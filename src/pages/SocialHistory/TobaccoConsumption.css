@@ -2,16 +2,16 @@
 
 .tobacco-consumption-panel {
   position: fixed;
-  top: 120px;
+  top: 100px;
   right: 30px; /* Same position as tobacco panel */
   background-color: white;
   border: 1px solid #ccc;
-  width: 850px; /* Same as tobacco panel */
+  width: 750px; /* Same as tobacco panel */
   padding: 15px; /* Same as tobacco panel */
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
   border-radius: 6px;
   z-index: 1000;
-  height:700px; 
+  height:670px; 
   max-height: 800px; /* Same as tobacco panel */
   overflow-y: auto;
 }

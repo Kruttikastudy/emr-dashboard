@@ -253,10 +253,40 @@ const NewVisit = () => {
       medications.every(m => !m.problem && !m.medicine && !m.mg);
   };
 
+  // Helper function to convert date from YYYY-MM-DD to MM-DD-YYYY
+  const formatDateToMMDDYYYY = (dateString) => {
+    if (!dateString) return null;
+    const [year, month, day] = dateString.split('-');
+    return `${month}-${day}-${year}`;
+  };
+
   const handleSubmit = async (status = 'saved') => {
-    if (!formData.patientName || !formData.patientId) {
-      alert('Patient Name and Patient ID are required');
+    if (!formData.patientName?.trim()) {
+      alert('Patient Name is required');
+      setCurrentStep(1); // Navigate back to step 1
       return;
+    }
+
+    if (!formData.patientId?.trim()) {
+      alert('Patient ID is required');
+      setCurrentStep(1); // Navigate back to step 1
+      return;
+    }
+
+    if (!formData.visitType?.trim()) {
+      alert('Visit Type is required');
+      setCurrentStep(1); // Navigate back to step 1
+      return;
+    }
+
+    if (!formData.chiefComplaints?.trim() && status === 'complete') {
+      const confirmSubmit = window.confirm(
+        'Chief Complaints is empty. Do you want to continue?'
+      );
+      if (!confirmSubmit) {
+        setCurrentStep(1);
+        return;
+      }
     }
 
     setLoading(true);
@@ -269,9 +299,10 @@ const NewVisit = () => {
       }
 
       const visitData = {
-        visit_type: formData.visitType, patient_id: formData.patientId,
+        visit_type: formData.visitType,
+        patient_id: formData.patientId,
         patient_name: formData.patientName,
-        chief_complaints: formData.chiefComplaints,
+        chief_complaints: formData.chiefComplaints || '', // Ensure empty string instead of null
         vitals: {
           height: formData.height ? parseFloat(formData.height) : null,
           weight: formData.weight ? parseFloat(formData.weight) : null,
@@ -301,22 +332,20 @@ const NewVisit = () => {
             status: m.status ? 'Active' : 'Inactive'
           })),
         seen_by: formData.seenBy || null,
-        appointment_date: formData.followUpDate || null,
+        appointment_date: formatDateToMMDDYYYY(formData.followUpDate),
         billing: {
-          total_cost: formData.totalCost || null,
-          amount_paid: formData.amountPaid || null,
-          balance_amount: displayBalance || formData.balanceAmount || null
+          total_cost: formData.totalCost ? parseFloat(formData.totalCost) : null,
+          amount_paid: formData.amountPaid ? parseFloat(formData.amountPaid) : null,
+          balance_amount: displayBalance ? parseFloat(displayBalance) : null
         },
         status: visitStatus
       };
 
       let response;
       if (currentVisitId) {
-        // Update existing visit
         response = await axios.put(`/api/visits/${currentVisitId}`, visitData);
         alert('Visit updated successfully!');
       } else {
-        // Create new visit
         response = await axios.post('/api/visits', visitData);
         const statusMessage = visitStatus === 'pending'
           ? 'saved as pending (incomplete information)'
@@ -327,20 +356,26 @@ const NewVisit = () => {
       }
 
       if (response.data.success) {
-        // Refresh visits list
         fetchVisits();
-
-        // Reset form
         handleNewVisit();
       }
     } catch (error) {
       console.error('Error saving visit:', error);
-      alert(error.response?.data?.message || 'Error saving visit. Please try again.');
+
+      // Better error handling
+      if (error.response?.data?.message) {
+        alert(error.response.data.message);
+      } else if (error.response?.data?.errors) {
+        // If backend returns validation errors object
+        const errorMessages = Object.values(error.response.data.errors).join('\n');
+        alert(`Validation errors:\n${errorMessages}`);
+      } else {
+        alert('Error saving visit. Please check all required fields and try again.');
+      }
     } finally {
       setLoading(false);
     }
   };
-
   const computedBalance = useMemo(() => {
     const total = parseFloat(formData.totalCost || 0) || 0;
     const paid = parseFloat(formData.amountPaid || 0) || 0;
@@ -833,13 +868,6 @@ const NewVisit = () => {
                   disabled={loading}
                 >
                   {loading ? 'Saving...' : currentVisitId ? 'Update' : 'Save'}
-                </button>
-                <button
-                  className="btn-complete"
-                  onClick={() => handleSubmit('complete')}
-                  disabled={loading}
-                >
-                  {loading ? 'Saving...' : currentVisitId ? 'Update as Complete' : 'Save as Complete'}
                 </button>
               </div>
             </div>
