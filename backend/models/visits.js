@@ -28,7 +28,7 @@ const visitSchema = new mongoose.Schema({
   },
   chief_complaints: {
     type: String,
-    required: true
+    default: ''
   },
   vitals: {
     height: {
@@ -138,7 +138,7 @@ const visitSchema = new mongoose.Schema({
     type: String,
     default: null,
     validate: {
-      validator: function(v) {
+      validator: function (v) {
         if (!v) return true;
         return /^(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])-\d{4}$/.test(v);
       },

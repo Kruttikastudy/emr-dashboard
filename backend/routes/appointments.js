@@ -7,6 +7,7 @@ const router = express.Router();
 // Create a new appointment
 router.post('/appointments', async (req, res) => {
   try {
+    console.log('Received appointment data:', req.body);
     const {
       firstName,
       middleName,
@@ -19,11 +20,13 @@ router.post('/appointments', async (req, res) => {
       reason,
       urgencyDropdown,
       doctor,
-      comments
+      comments,
+      patient_id
     } = req.body;
 
     // Validate required fields
-    if (!firstName || !lastName || !age || !contactInfo || !date || !time) {
+    if (!firstName || !lastName || (age === undefined || age === null || age === '') || !contactInfo || !date || !time) {
+      console.log('Validation failed. Missing fields:', { firstName, lastName, age, contactInfo, date, time });
       return res.status(400).json({
         success: false,
         message: 'First name, last name, age, contact information, date, and time are required'
@@ -38,8 +41,8 @@ router.post('/appointments', async (req, res) => {
       });
     }
 
-    // Generate a new patient_id for every appointment
-    const generatedPatientId = new mongoose.Types.ObjectId();
+    // Use provided patient_id or generate a new one
+    const finalPatientId = patient_id || new mongoose.Types.ObjectId();
 
     // Format date from YYYY-MM-DD to MM-DD-YYYY
     const formattedDate = formatDateToMMDDYYYY(date);
@@ -54,7 +57,7 @@ router.post('/appointments', async (req, res) => {
         middle: middleName || null,
         last: lastName
       },
-      patient_id: generatedPatientId,
+      patient_id: finalPatientId,
       age: parseInt(age),
       contact_information: contactInfo,
       appointment_date: formattedDate,
@@ -75,7 +78,7 @@ router.post('/appointments', async (req, res) => {
       message: 'Appointment created successfully',
       data: savedAppointment,
       appointmentId: savedAppointment._id,
-      patientId: generatedPatientId
+      patientId: finalPatientId
     });
 
   } catch (error) {
@@ -92,7 +95,7 @@ router.post('/appointments', async (req, res) => {
 router.get('/appointments', async (req, res) => {
   try {
     const { patientId, patientName, doctor, appointmentType, startDate, endDate, urgency } = req.query;
-    
+
     let query = {};
 
     // Filter by patient ID
@@ -300,7 +303,7 @@ router.get('/patients/:patientId/appointments', async (req, res) => {
 router.get('/appointments/stats/overview', async (req, res) => {
   try {
     const totalAppointments = await Appointment.countDocuments();
-    
+
     const appointmentsByType = await Appointment.aggregate([
       {
         $group: {
@@ -374,28 +377,28 @@ router.get('/appointments/today/list', async (req, res) => {
 // Helper function to format date from YYYY-MM-DD to MM-DD-YYYY
 function formatDateToMMDDYYYY(dateString) {
   if (!dateString) return null;
-  
+
   const date = new Date(dateString);
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
   const year = date.getFullYear();
-  
+
   return `${month}-${day}-${year}`;
 }
 
 // Helper function to format time from 24-hour (HH:MM) to 12-hour (HH:MM AM/PM)
 function formatTimeTo12Hour(timeString) {
   if (!timeString) return null;
-  
+
   const [hours, minutes] = timeString.split(':');
   let hour = parseInt(hours);
   const ampm = hour >= 12 ? 'PM' : 'AM';
-  
+
   hour = hour % 12;
   hour = hour ? hour : 12; // Convert 0 to 12
-  
+
   const formattedHour = String(hour).padStart(2, '0');
-  
+
   return `${formattedHour}:${minutes} ${ampm}`;
 }
 

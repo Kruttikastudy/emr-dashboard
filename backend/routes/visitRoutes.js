@@ -11,103 +11,88 @@ const router = express.Router();
 router.post('/visits', async (req, res) => {
   try {
     const {
-      visitType,
-      patientName,
-      chiefComplaints,
-      height,
-      weight,
-      bloodPressure,
-      pulse,
-      respiratoryRate,
-      oxygenSaturation,
-      temperature,
+      visit_type,
+      patient_id,
+      patient_name,
+      chief_complaints,
+      vitals,
       notes,
-      investigationRequest,
-      investigationResult,
-      icdQuickest,
-      icdFull,
+      investigation_request,
+      investigation_result,
+      diagnosis,
       treatment,
-      medications,
-      seenBy,
-      followUpDate,
-      totalCost,
-      amountPaid,
-      balanceAmount
+      medication_history,
+      seen_by,
+      appointment_date,
+      billing,
+      status
     } = req.body;
 
     // Validate required fields
-    if (!visitType || !patientName || !chiefComplaints) {
+    if (!visit_type || !patient_name) {
       return res.status(400).json({
         success: false,
-        message: 'Visit type, patient name, and chief complaints are required'
+        message: 'Visit type and patient name are required'
       });
     }
 
-    // Generate a new patient_id for every visit
-    const generatedPatientId = new mongoose.Types.ObjectId();
+    // Generate a new patient_id if not provided
+    const finalPatientId = patient_id || new mongoose.Types.ObjectId();
 
-    // Process medications if provided - IMPROVED VALIDATION
+    // Process medications if provided
     let formattedMedications = [];
-    if (medications && Array.isArray(medications)) {
-      formattedMedications = medications
-        // First filter out completely empty rows
+    if (medication_history && Array.isArray(medication_history)) {
+      formattedMedications = medication_history
         .filter(med => {
           const hasProblem = med.problem && med.problem.trim();
           const hasMedicine = med.medicine && med.medicine.trim();
-          const hasDosage = med.mg && med.mg.toString().trim();
+          const hasDosage = med.dosage;
           return hasProblem || hasMedicine || hasDosage;
         })
-        // Then map to the correct format
-        .map(med => {
-          // Ensure all required fields have values or defaults
-          return {
-            problem: med.problem?.trim() || '',
-            medicine: med.medicine?.trim() || '',
-            dosage: med.mg ? parseFloat(med.mg) : 0,
-            dose_time: med.doseTime?.trim() || '',
-            frequency: med.frequency?.trim() || '',
-            duration: med.timePeriod?.trim() || '',
-            status: med.status ? 'Active' : 'Inactive'
-          };
-        })
-        // Filter out any medications that still don't have the minimum required data
-        .filter(med => {
-          // Only include medications that have at least problem, medicine, and dosage
-          return med.problem && med.medicine && med.dosage > 0;
-        });
+        .map(med => ({
+          problem: med.problem?.trim() || '',
+          medicine: med.medicine?.trim() || '',
+          dosage: med.dosage ? parseFloat(med.dosage) : 0,
+          dose_time: med.dose_time?.trim() || '',
+          frequency: med.frequency?.trim() || '',
+          duration: med.duration?.trim() || '',
+          status: med.status || 'Inactive'
+        }))
+        .filter(med => med.problem && med.medicine && med.dosage > 0);
     }
 
-    // Create visit object
+    // Create visit object - use fields directly from request
     const visitData = {
-      visit_type: visitType,
-      patient_name: patientName,
-      patient_id: generatedPatientId,
-      chief_complaints: chiefComplaints,
-      vitals: {
-        height: height ? parseFloat(height) : null,
-        weight: weight ? parseFloat(weight) : null,
-        blood_pressure: bloodPressure || null,
-        pulse: pulse ? parseInt(pulse) : null,
-        respiratory_rate: respiratoryRate ? parseInt(respiratoryRate) : null,
-        oxygen_saturation: oxygenSaturation ? parseFloat(oxygenSaturation) : null,
-        temperature: temperature ? parseFloat(temperature) : null
+      visit_type,
+      patient_name,
+      patient_id: finalPatientId,
+      chief_complaints: chief_complaints || '',
+      vitals: vitals || {
+        height: null,
+        weight: null,
+        blood_pressure: null,
+        pulse: null,
+        respiratory_rate: null,
+        oxygen_saturation: null,
+        temperature: null
       },
-      investigation_request: investigationRequest || null,
-      investigation_result: investigationResult || null,
-      diagnosis: {
-        icd10_quickest: icdQuickest || null,
-        full_icd10_list: icdFull || null
+      investigation_request: investigation_request || null,
+      investigation_result: investigation_result || null,
+      diagnosis: diagnosis || {
+        icd10_quickest: null,
+        full_icd10_list: null
       },
       treatment: treatment || null,
       medication_history: formattedMedications,
-      seen_by: seenBy || null,
-      appointment_date: followUpDate ? formatDateToMMDDYYYY(followUpDate) : null,
+      seen_by: seen_by || null,
+      appointment_date: appointment_date || null,
       billing: {
-        total_cost: totalCost ? parseFloat(totalCost) : null,
-        amount_paid: amountPaid ? parseFloat(amountPaid) : null,
-        balance_amount: balanceAmount ? parseFloat(balanceAmount) : null
+        total_cost: billing?.total_cost || 0,
+        amount_paid: billing?.amount_paid || 0,
+        balance_amount: billing?.balance_amount || 0
       },
-      notes: notes || null
+      notes: notes || null,
+      status: status || 'pending'
     };
 
     // Create new visit
@@ -119,13 +104,26 @@ router.post('/visits', async (req, res) => {
       message: 'Visit created successfully',
       data: savedVisit,
       visitId: savedVisit._id,
-      patientId: generatedPatientId,
+      patientId: finalPatientId,
       medicationCount: formattedMedications.length
     });
 
   } catch (error) {
     console.error('Error creating visit:', error);
-    
+
+    // Log detailed validation error information for MongoDB schema validation
+    if (error.code === 121) {
+      console.error('MongoDB Validation Error Details:');
+      console.error('Error Info:', JSON.stringify(error.errInfo, null, 2));
+
+      return res.status(400).json({
+        success: false,
+        message: 'Document validation failed',
+        error: error.errmsg,
+        details: error.errInfo
+      });
+    }
+
     // Better error handling
     if (error.name === 'ValidationError') {
       const errors = Object.values(error.errors).map(err => err.message);
@@ -135,7 +133,7 @@ router.post('/visits', async (req, res) => {
         errors: errors
       });
     }
-    
+
     res.status(500).json({
       success: false,
       message: 'Error creating visit',
@@ -148,7 +146,7 @@ router.post('/visits', async (req, res) => {
 router.get('/visits', async (req, res) => {
   try {
     const { patientId, patientName, visitType, startDate, endDate } = req.query;
-    
+
     let query = {};
 
     // Filter by patient ID
@@ -707,12 +705,12 @@ router.patch('/visits/:visitId/medications/:medicationId/status', async (req, re
 // Helper function to format date
 function formatDateToMMDDYYYY(dateString) {
   if (!dateString) return null;
-  
+
   const date = new Date(dateString);
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
   const year = date.getFullYear();
-  
+
   return `${month}-${day}-${year}`;
 }
 
