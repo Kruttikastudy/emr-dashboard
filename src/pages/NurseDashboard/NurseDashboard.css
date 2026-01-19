@@ -72,7 +72,8 @@
   padding-bottom: 12px;
   border-bottom: 3px solid var(--primary-blue);
   margin-bottom: 12px;
-  height: 48px; /* Fixed height for alignment */
+  height: 48px;
+  /* Fixed height for alignment */
 }
 
 .card-header-section h2 {
@@ -316,8 +317,34 @@ ul {
     flex-direction: column;
     height: auto;
   }
-  
+
   .col {
     flex: none;
   }
+}
+
+/* Download Button Styles */
+.recent-patient-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.download-icon-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #236D8B;
+}
+
+.download-icon-btn:hover {
+  background-color: rgba(35, 109, 139, 0.1);
+  transform: scale(1.1);
 }

@@ -221,27 +221,21 @@ router.get('/visits/:id', async (req, res) => {
 router.put('/visits/:id', async (req, res) => {
   try {
     const {
-      visitType,
-      patientName,
-      chiefComplaints,
-      height,
-      weight,
-      bloodPressure,
-      pulse,
-      respiratoryRate,
-      oxygenSaturation,
-      temperature,
+      visit_type,
+      patient_id,
+      patient_name,
+      chief_complaints,
+      vitals,
       notes,
-      investigationRequest,
-      investigationResult,
-      icdQuickest,
-      icdFull,
+      investigation_request,
+      investigation_result,
+      diagnosis,
       treatment,
-      seenBy,
-      followUpDate,
-      totalCost,
-      amountPaid,
-      balanceAmount
+      medication_history,
+      seen_by,
+      appointment_date,
+      billing,
+      status
     } = req.body;
 
     const visit = await Visit.findById(req.params.id);
@@ -254,33 +248,66 @@ router.put('/visits/:id', async (req, res) => {
     }
 
     // Update fields
-    if (visitType) visit.visit_type = visitType;
-    if (patientName) visit.patient_name = patientName;
-    if (chiefComplaints) visit.chief_complaints = chiefComplaints;
+    if (visit_type) visit.visit_type = visit_type;
+    if (patient_name) visit.patient_name = patient_name;
+    // patient_id usually shouldn't change, but if needed:
+    if (patient_id) visit.patient_id = patient_id;
+
+    // Handle empty string for chief_complaints as valid update
+    if (chief_complaints !== undefined) visit.chief_complaints = chief_complaints;
 
     // Update vitals
-    if (height !== undefined) visit.vitals.height = height ? parseFloat(height) : null;
-    if (weight !== undefined) visit.vitals.weight = weight ? parseFloat(weight) : null;
-    if (bloodPressure !== undefined) visit.vitals.blood_pressure = bloodPressure || null;
-    if (pulse !== undefined) visit.vitals.pulse = pulse ? parseInt(pulse) : null;
-    if (respiratoryRate !== undefined) visit.vitals.respiratory_rate = respiratoryRate ? parseInt(respiratoryRate) : null;
-    if (oxygenSaturation !== undefined) visit.vitals.oxygen_saturation = oxygenSaturation ? parseFloat(oxygenSaturation) : null;
-    if (temperature !== undefined) visit.vitals.temperature = temperature ? parseFloat(temperature) : null;
+    if (vitals) {
+      if (vitals.height !== undefined) visit.vitals.height = vitals.height;
+      if (vitals.weight !== undefined) visit.vitals.weight = vitals.weight;
+      if (vitals.blood_pressure !== undefined) visit.vitals.blood_pressure = vitals.blood_pressure;
+      if (vitals.pulse !== undefined) visit.vitals.pulse = vitals.pulse;
+      if (vitals.respiratory_rate !== undefined) visit.vitals.respiratory_rate = vitals.respiratory_rate;
+      if (vitals.oxygen_saturation !== undefined) visit.vitals.oxygen_saturation = vitals.oxygen_saturation;
+      if (vitals.temperature !== undefined) visit.vitals.temperature = vitals.temperature;
+    }
 
     // Update other fields
-    if (investigationRequest !== undefined) visit.investigation_request = investigationRequest || null;
-    if (investigationResult !== undefined) visit.investigation_result = investigationResult || null;
-    if (icdQuickest !== undefined) visit.diagnosis.icd10_quickest = icdQuickest || null;
-    if (icdFull !== undefined) visit.diagnosis.full_icd10_list = icdFull || null;
-    if (treatment !== undefined) visit.treatment = treatment || null;
-    if (seenBy !== undefined) visit.seen_by = seenBy || null;
-    if (followUpDate !== undefined) visit.appointment_date = followUpDate ? formatDateToMMDDYYYY(followUpDate) : null;
-    if (notes !== undefined) visit.notes = notes || null;
+    if (investigation_request !== undefined) visit.investigation_request = investigation_request;
+    if (investigation_result !== undefined) visit.investigation_result = investigation_result;
+
+    if (diagnosis) {
+      if (diagnosis.icd10_quickest !== undefined) visit.diagnosis.icd10_quickest = diagnosis.icd10_quickest;
+      if (diagnosis.full_icd10_list !== undefined) visit.diagnosis.full_icd10_list = diagnosis.full_icd10_list;
+    }
+
+    if (treatment !== undefined) visit.treatment = treatment;
+    if (seen_by !== undefined) visit.seen_by = seen_by;
+
+    // Handle date format if necessary, or assume frontend sends correct format or Date object
+    if (appointment_date !== undefined) visit.appointment_date = appointment_date;
+
+    if (notes !== undefined) visit.notes = notes;
+    if (status !== undefined) visit.status = status;
 
     // Update billing
-    if (totalCost !== undefined) visit.billing.total_cost = totalCost ? parseFloat(totalCost) : null;
-    if (amountPaid !== undefined) visit.billing.amount_paid = amountPaid ? parseFloat(amountPaid) : null;
-    if (balanceAmount !== undefined) visit.billing.balance_amount = balanceAmount ? parseFloat(balanceAmount) : null;
+    if (billing) {
+      if (billing.total_cost !== undefined) visit.billing.total_cost = billing.total_cost;
+      if (billing.amount_paid !== undefined) visit.billing.amount_paid = billing.amount_paid;
+      if (billing.balance_amount !== undefined) visit.billing.balance_amount = billing.balance_amount;
+    }
+
+    // Update medication history if provided
+    if (medication_history && Array.isArray(medication_history)) {
+      // Transform if necessary, or trust frontend to send correct structure matching schema
+      // The frontend sends: { problem, medicine, dosage, dose_time, frequency, duration, status }
+      // The schema expects: { problem, medicine, dosage, dose_time, frequency, duration, status }
+      // So we can map it directly but ensure we filter out empty ones just in case
+      visit.medication_history = medication_history.map(med => ({
+        problem: med.problem || '',
+        medicine: med.medicine || '',
+        dosage: med.dosage || 0,
+        dose_time: med.dose_time || '',
+        frequency: med.frequency || '',
+        duration: med.duration || '',
+        status: med.status || 'Inactive'
+      }));
+    }
 
     const updatedVisit = await visit.save();
 

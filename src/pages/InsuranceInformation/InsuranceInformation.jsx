@@ -28,83 +28,83 @@ const InsuranceInformation = () => {
   const [showPreview, setShowPreview] = useState(false);
 
   // Load existing insurance data from database
-useEffect(() => {
-  const loadInsurance = async () => {
-    const patientId = localStorage.getItem("currentPatientId");
-    if (!patientId) {
-      console.warn("No patientId found in localStorage");
-      return;
-    }
-
-    try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/insurance/${patientId}`);
-      const result = await response.json();
-
-      console.log("🔹 Raw backend response:", result);
-
-      if (!response.ok) {
-        console.warn("⚠️ Bad response:", response.status);
+  useEffect(() => {
+    const loadInsurance = async () => {
+      const patientId = localStorage.getItem("currentPatientId");
+      if (!patientId) {
+        console.warn("No patientId found in localStorage");
         return;
       }
 
-      // Support both backend response formats
-      const data = result.data?.insurance || result.insurance;
+      try {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/insurance/${patientId}`);
+        const result = await response.json();
 
-      if (!data) {
-        console.warn("⚠️ No insurance data found for patient:", patientId);
-        return;
+        console.log("🔹 Raw backend response:", result);
+
+        if (!response.ok) {
+          console.warn("⚠️ Bad response:", response.status);
+          return;
+        }
+
+        // Support both backend response formats
+        const data = result.data?.insurance || result.insurance;
+
+        if (!data) {
+          console.warn("⚠️ No insurance data found for patient:", patientId);
+          return;
+        }
+
+        console.log("✅ Extracted insurance data:", data);
+
+        // Convert backend date (MM-DD-YYYY) to YYYY-MM-DD for input fields
+        const formatDate = (dateStr) => {
+          if (!dateStr) return "";
+          const [mm, dd, yyyy] = dateStr.split("-");
+          return `${yyyy}-${mm.padStart(2, "0")}-${dd.padStart(2, "0")}`;
+        };
+
+        const newData = {
+          primaryCompanyName: data.primary?.company_name || "",
+          primaryPolicyNumber: data.primary?.policy_number || "",
+          primaryGroupNumber: data.primary?.group_number || "",
+          primaryPlanType: data.primary?.plan_type || "",
+          primaryStartDate: formatDate(data.primary?.effective_start),
+          primaryEndDate: formatDate(data.primary?.effective_end),
+          secondaryCompanyName: data.secondary?.company_name || "",
+          secondaryPolicyNumber: data.secondary?.policy_number || "",
+          secondaryGroupNumber: data.secondary?.group_number || "",
+          secondaryPlanType: data.secondary?.plan_type || "",
+          secondaryStartDate: formatDate(data.secondary?.effective_start),
+          secondaryEndDate: formatDate(data.secondary?.effective_end),
+          contactNumber: data.insurance_contact_number || "",
+        };
+
+        console.log("✅ Mapped frontend data:", newData);
+
+        // Set data to state
+        setInsuranceData(newData);
+
+        // Show in preview if you have one
+        if (typeof updatePreviewData === "function") {
+          updatePreviewData(newData, "insurance");
+        }
+
+        // Show uploaded files if any
+        if (Array.isArray(data.uploaded_files) && data.uploaded_files.length > 0) {
+          const existingFiles = data.uploaded_files.map((f) => ({ name: f, existing: true }));
+          setSelectedFiles(existingFiles);
+
+          const uploadInput = document.querySelector(".upload-input");
+          if (uploadInput) uploadInput.value = data.uploaded_files.join(", ");
+        }
+      } catch (error) {
+        console.error("❌ Error loading insurance data:", error);
       }
+    };
 
-      console.log("✅ Extracted insurance data:", data);
-
-      // Convert backend date (MM-DD-YYYY) to YYYY-MM-DD for input fields
-      const formatDate = (dateStr) => {
-        if (!dateStr) return "";
-        const [mm, dd, yyyy] = dateStr.split("-");
-        return `${yyyy}-${mm.padStart(2, "0")}-${dd.padStart(2, "0")}`;
-      };
-
-      const newData = {
-        primaryCompanyName: data.primary?.company_name || "",
-        primaryPolicyNumber: data.primary?.policy_number || "",
-        primaryGroupNumber: data.primary?.group_number || "",
-        primaryPlanType: data.primary?.plan_type || "",
-        primaryStartDate: formatDate(data.primary?.effective_start),
-        primaryEndDate: formatDate(data.primary?.effective_end),
-        secondaryCompanyName: data.secondary?.company_name || "",
-        secondaryPolicyNumber: data.secondary?.policy_number || "",
-        secondaryGroupNumber: data.secondary?.group_number || "",
-        secondaryPlanType: data.secondary?.plan_type || "",
-        secondaryStartDate: formatDate(data.secondary?.effective_start),
-        secondaryEndDate: formatDate(data.secondary?.effective_end),
-        contactNumber: data.insurance_contact_number || "",
-      };
-
-      console.log("✅ Mapped frontend data:", newData);
-
-      // Set data to state
-      setInsuranceData(newData);
-
-      // Show in preview if you have one
-      if (typeof updatePreviewData === "function") {
-        updatePreviewData(newData, "insurance");
-      }
-
-      // Show uploaded files if any
-      if (Array.isArray(data.uploaded_files) && data.uploaded_files.length > 0) {
-        const existingFiles = data.uploaded_files.map((f) => ({ name: f, existing: true }));
-        setSelectedFiles(existingFiles);
-
-        const uploadInput = document.querySelector(".upload-input");
-        if (uploadInput) uploadInput.value = data.uploaded_files.join(", ");
-      }
-    } catch (error) {
-      console.error("❌ Error loading insurance data:", error);
-    }
-  };
-
-  loadInsurance();
-}, []);
+    loadInsurance();
+  }, []);
 
 
   const handleChange = (e) => {
@@ -161,7 +161,7 @@ useEffect(() => {
       });
 
       const data = await res.json();
-      
+
       if (res.ok) {
         console.log("Saved Insurance Data:", data);
 
@@ -265,7 +265,7 @@ useEffect(() => {
           <h2>Insurance Information Preview</h2>
           <button className="close-btn" onClick={() => setShowPreview(false)}>×</button>
         </div>
-        
+
         <div className="preview-content">
           <div className="preview-section">
             <h3>Primary Insurance</h3>
@@ -334,7 +334,7 @@ useEffect(() => {
             <div className="preview-row">
               <span className="preview-label">Insurance Card Files:</span>
               <span className="preview-value">
-                {selectedFiles.length > 0 
+                {selectedFiles.length > 0
                   ? selectedFiles.map(file => file.name).join(', ')
                   : "No files selected"
                 }
@@ -438,6 +438,7 @@ useEffect(() => {
                   onChange={(e) => handleDateChange(e, "primaryStartDate")}
                   value={insuranceData.primaryStartDate}
                   className="date-input"
+                  max={new Date().toISOString().split('T')[0]}
                 />
               </div>
               <div className="date-input-group">
@@ -530,6 +531,7 @@ useEffect(() => {
                   onChange={(e) => handleDateChange(e, "secondaryStartDate")}
                   value={insuranceData.secondaryStartDate}
                   className="date-input"
+                  max={new Date().toISOString().split('T')[0]}
                 />
               </div>
               <div className="date-input-group">

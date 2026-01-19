@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { generateVisitPDF } from '../../utils/pdfGenerator';
 import './NewVisit.css';
 import logo from "../../assets/logo.jpg";
 
@@ -98,6 +99,20 @@ const NewVisit = () => {
   const loadVisitData = (visit) => {
     setCurrentVisitId(visit._id);
 
+    // Helper to convert MM-DD-YYYY to YYYY-MM-DD for input fields
+    const formatDateToYYYYMMDD = (dateString) => {
+      if (!dateString) return '';
+      // If already YYYY-MM-DD, return as is
+      if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) return dateString;
+
+      const parts = dateString.split('-');
+      if (parts.length === 3) {
+        // MM-DD-YYYY -> YYYY-MM-DD
+        return `${parts[2]}-${parts[0]}-${parts[1]}`;
+      }
+      return '';
+    };
+
     // Load basic form data
     setFormData({
       visitType: visit.visit_type || 'Emergency Visit',
@@ -118,7 +133,7 @@ const NewVisit = () => {
       icdFull: visit.diagnosis?.full_icd10_list || '',
       treatment: visit.treatment || '',
       seenBy: visit.seen_by || 'Dr. Smith',
-      followUpDate: visit.appointment_date || '',
+      followUpDate: formatDateToYYYYMMDD(visit.appointment_date) || '',
       totalCost: visit.billing?.total_cost || '',
       amountPaid: visit.billing?.amount_paid || '',
       balanceAmount: visit.billing?.balance_amount || '',
@@ -169,7 +184,8 @@ const NewVisit = () => {
 
   const nextStep = () => {
     if (currentStep === 1) {
-      if (!formData.patientName || !formData.patientId) {
+      const isEmergency = formData.visitType === 'Emergency Visit';
+      if (!isEmergency && (!formData.patientName || !formData.patientId)) {
         alert('Please fill in Patient Name and Patient ID');
         return;
       }
@@ -261,13 +277,15 @@ const NewVisit = () => {
   };
 
   const handleSubmit = async (status = 'saved') => {
-    if (!formData.patientName?.trim()) {
+    const isEmergency = formData.visitType === 'Emergency Visit';
+
+    if (!isEmergency && !formData.patientName?.trim()) {
       alert('Patient Name is required');
       setCurrentStep(1); // Navigate back to step 1
       return;
     }
 
-    if (!formData.patientId?.trim()) {
+    if (!isEmergency && !formData.patientId?.trim()) {
       alert('Patient ID is required');
       setCurrentStep(1); // Navigate back to step 1
       return;
@@ -300,8 +318,8 @@ const NewVisit = () => {
 
       const visitData = {
         visit_type: formData.visitType,
-        patient_id: formData.patientId,
-        patient_name: formData.patientName,
+        patient_id: formData.patientId || null,
+        patient_name: formData.patientName?.trim() || (isEmergency ? 'Unknown (Emergency)' : ''),
         chief_complaints: formData.chiefComplaints || '', // Ensure empty string instead of null
         vitals: {
           height: formData.height ? parseFloat(formData.height) : null,
@@ -375,6 +393,14 @@ const NewVisit = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDownloadPDF = (visitDataToDownload = null) => {
+    const data = visitDataToDownload || {
+      ...formData,
+      medications: medications.filter(m => m.problem?.trim() || m.medicine?.trim() || m.mg?.trim())
+    };
+    generateVisitPDF(data);
   };
   const computedBalance = useMemo(() => {
     const total = parseFloat(formData.totalCost || 0) || 0;
@@ -453,7 +479,19 @@ const NewVisit = () => {
                       {visit.createdAt ? formatVisitTime(visit.createdAt) : ''}
                     </div>
                   </div>
-                  <div className="patient-arrow">›</div>
+                  <div className="patient-actions">
+                    <button
+                      className="download-icon-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDownloadPDF(visit);
+                      }}
+                      title="Download PDF"
+                    >
+                      📥
+                    </button>
+                    <div className="patient-arrow">›</div>
+                  </div>
                 </div>
               );
             })}
@@ -464,13 +502,22 @@ const NewVisit = () => {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <h2 className="page-title">{currentVisitId ? 'Edit Visit' : 'New Visit'}</h2>
             {currentVisitId && (
-              <button
-                className="btn-outline"
-                onClick={handleNewVisit}
-                style={{ padding: '8px 16px' }}
-              >
-                + New Visit
-              </button>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button
+                  className="btn-download"
+                  onClick={() => handleDownloadPDF()}
+                  style={{ padding: '8px 16px' }}
+                >
+                  📥 Download PDF
+                </button>
+                <button
+                  className="btn-outline"
+                  onClick={handleNewVisit}
+                  style={{ padding: '8px 16px' }}
+                >
+                  + New Visit
+                </button>
+              </div>
             )}
           </div>
 
@@ -489,25 +536,25 @@ const NewVisit = () => {
                 </div>
 
                 <div className="form-group">
-                  <label>Patient ID <span style={{ color: 'red' }}>*</span></label>
+                  <label>Patient ID {formData.visitType !== 'Emergency Visit' && <span style={{ color: 'red' }}>*</span>}</label>
                   <input
                     type="text"
                     value={formData.patientId}
                     onChange={(e) => handleInputChange('patientId', e.target.value)}
                     onBlur={handlePatientIdBlur}
-                    placeholder="Enter patient ID"
-                    required
+                    placeholder={formData.visitType === 'Emergency Visit' ? "Optional for Emergency" : "Enter patient ID"}
+                    required={formData.visitType !== 'Emergency Visit'}
                   />
                 </div>
 
                 <div className="form-group">
-                  <label>Patient Name <span style={{ color: 'red' }}>*</span></label>
+                  <label>Patient Name {formData.visitType !== 'Emergency Visit' && <span style={{ color: 'red' }}>*</span>}</label>
                   <input
                     type="text"
                     value={formData.patientName}
                     onChange={(e) => handleInputChange('patientName', e.target.value)}
-                    placeholder="Enter patient name"
-                    required
+                    placeholder={formData.visitType === 'Emergency Visit' ? "Optional for Emergency" : "Enter patient name"}
+                    required={formData.visitType !== 'Emergency Visit'}
                   />
                 </div>
 

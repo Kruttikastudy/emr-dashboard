@@ -4,7 +4,7 @@ import "./TobaccoConsumption.css";
 const TobaccoConsumption = ({ onClose }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   const [formData, setFormData] = useState({
     status: "Never used",
     dailyConsumption: "",
@@ -18,7 +18,7 @@ const TobaccoConsumption = ({ onClose }) => {
   useEffect(() => {
     const fetchTobaccoConsumptionData = async () => {
       const patientId = localStorage.getItem("currentPatientId");
-      
+
       if (!patientId) {
         console.log("No patient ID found in localStorage");
         setIsLoading(false);
@@ -28,9 +28,9 @@ const TobaccoConsumption = ({ onClose }) => {
       try {
         console.log("Fetching tobacco consumption data for patient:", patientId);
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/tobacco-consumption`);
-        
+
         console.log("Response status:", response.status);
-        
+
         // Check if response is JSON
         const contentType = response.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {
@@ -100,7 +100,7 @@ const TobaccoConsumption = ({ onClose }) => {
       });
 
       console.log("Response status:", response.status);
-      
+
       // Check if response is JSON
       const contentType = response.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
@@ -120,7 +120,7 @@ const TobaccoConsumption = ({ onClose }) => {
 
       console.log("Tobacco consumption data saved successfully:", result.data);
       alert('Tobacco consumption information saved successfully!');
-      
+
       // Close the panel after successful save
       if (onClose) {
         onClose();
@@ -150,12 +150,12 @@ const TobaccoConsumption = ({ onClose }) => {
       <div className="panel-header">
         <h3>Tobacco Consumption</h3>
       </div>
-      
+
       <div className="form-group">
         <label>Status:</label>
-        <select 
-          name="status" 
-          value={formData.status} 
+        <select
+          name="status"
+          value={formData.status}
           onChange={handleInputChange}
           disabled={isSaving}
         >
@@ -191,9 +191,9 @@ const TobaccoConsumption = ({ onClose }) => {
                 placeholder="Duration"
                 disabled={isSaving}
               />
-              <select 
-                name="durationUnit" 
-                value={formData.durationUnit} 
+              <select
+                name="durationUnit"
+                value={formData.durationUnit}
                 onChange={handleInputChange}
                 disabled={isSaving}
               >
@@ -214,6 +214,7 @@ const TobaccoConsumption = ({ onClose }) => {
                 value={formData.quitDate}
                 onChange={handleInputChange}
                 disabled={isSaving}
+                max={new Date().toISOString().split('T')[0]}
               />
             </div>
           )}
@@ -232,8 +233,8 @@ const TobaccoConsumption = ({ onClose }) => {
       </div>
 
       <div className="tobacco-consumption-buttons">
-        <button 
-          onClick={handleSave} 
+        <button
+          onClick={handleSave}
           className="save-btn"
           disabled={isSaving}
         >

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { generateVisitPDF } from '../../utils/pdfGenerator';
 import './NurseDashboard.css';
 
 const NurseDashboard = () => {
@@ -29,16 +30,16 @@ const NurseDashboard = () => {
           'Content-Type': 'application/json',
         },
       });
-      
+
       if (!patientsResponse.ok) {
         const errorText = await patientsResponse.text();
         throw new Error(`Failed to fetch patients: ${errorText}`);
       }
       const patientsData = await patientsResponse.json();
-      
+
       // Handle both array and object responses
       const patientsArray = Array.isArray(patientsData) ? patientsData : (patientsData.data || []);
-      
+
       // Map patients data to match the component structure
       const mappedPatients = patientsArray.map(patient => ({
         id: patient._id,
@@ -54,15 +55,15 @@ const NurseDashboard = () => {
         throw new Error('Failed to fetch visits');
       }
       const visitsResult = await visitsResponse.json();
-      
+
       // Handle both array and object responses
       const visitsData = Array.isArray(visitsResult) ? visitsResult : (visitsResult.data || []);
-      
+
       // Sort visits by creation time (most recent first) and store full data
       const sortedVisits = visitsData
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         .slice(0, 10); // Get last 10 visits
-      
+
       setRecentVisits(sortedVisits);
 
       // Fetch upcoming appointments
@@ -71,14 +72,14 @@ const NurseDashboard = () => {
         throw new Error('Failed to fetch appointments');
       }
       const appointmentsResult = await appointmentsResponse.json();
-      
+
       // Handle both array and object responses
       const appointmentsData = Array.isArray(appointmentsResult) ? appointmentsResult : (appointmentsResult.data || []);
-      
+
       // Filter and sort appointments for today and future dates
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      
+
       const upcomingAppointments = appointmentsData
         .map(appointment => {
           // Parse the date (MM-DD-YYYY format)
@@ -88,7 +89,7 @@ const NurseDashboard = () => {
             parseInt(dateParts[0]) - 1, // month (0-indexed)
             parseInt(dateParts[1]) // day
           );
-          
+
           return {
             ...appointment, // Keep all original data
             date: appointmentDate,
@@ -105,7 +106,7 @@ const NurseDashboard = () => {
           return a.appointment_time.localeCompare(b.appointment_time);
         })
         .slice(0, 10); // Get next 10 appointments
-      
+
       setAppointments(upcomingAppointments);
 
     } catch (err) {
@@ -143,22 +144,22 @@ const NurseDashboard = () => {
   const handleViewVisit = (visit) => {
     console.log('Opening visit for editing:', visit._id);
     // Navigate to new-visit page with the visit data
-    navigate('/new-visit', { 
-      state: { 
+    navigate('/new-visit', {
+      state: {
         visitData: visit,
-        isEditing: true 
-      } 
+        isEditing: true
+      }
     });
   };
 
   const handleViewAppointment = (appointment) => {
     console.log('Opening appointment for editing:', appointment._id);
     // Navigate to new-appointment page with the appointment data
-    navigate('/new-appointment', { 
-      state: { 
+    navigate('/new-appointment', {
+      state: {
         appointmentData: appointment,
-        isEditing: true 
-      } 
+        isEditing: true
+      }
     });
   };
 
@@ -269,7 +270,7 @@ const NurseDashboard = () => {
                         <span className="patient-id">Patient ID: {patient.id}</span>
                       </div>
                       <div className="patient-actions">
-                        <button 
+                        <button
                           className="view-btn"
                           onClick={() => handleViewPatient(patient.id)}
                         >
@@ -311,8 +312,8 @@ const NurseDashboard = () => {
               {filteredVisits.length > 0 ? (
                 <ul>
                   {filteredVisits.map((visit) => (
-                    <li 
-                      key={visit._id} 
+                    <li
+                      key={visit._id}
                       className="recent-patient-item"
                       onClick={() => handleViewVisit(visit)}
                       style={{ cursor: 'pointer' }}
@@ -328,7 +329,19 @@ const NurseDashboard = () => {
                           {formatVisitTime(visit.createdAt)}
                         </span>
                       </div>
-                      <div className="status-badge new">New</div>
+                      <div className="recent-patient-actions">
+                        <button
+                          className="download-icon-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            generateVisitPDF(visit);
+                          }}
+                          title="Download PDF"
+                        >
+                          📥
+                        </button>
+                        <div className="status-badge new">New</div>
+                      </div>
                     </li>
                   ))}
                 </ul>
@@ -364,8 +377,8 @@ const NurseDashboard = () => {
               {filteredAppointments.length > 0 ? (
                 <ul>
                   {filteredAppointments.map((appointment) => (
-                    <li 
-                      key={appointment._id} 
+                    <li
+                      key={appointment._id}
                       className="appointment-item"
                       onClick={() => handleViewAppointment(appointment)}
                       style={{ cursor: 'pointer' }}

@@ -215,6 +215,7 @@ const TobaccoUse = ({ onClose }) => {
             value={formData.quitDate}
             onChange={handleInputChange}
             disabled={isSaving}
+            max={new Date().toISOString().split('T')[0]}
           />
         </div>
       )}

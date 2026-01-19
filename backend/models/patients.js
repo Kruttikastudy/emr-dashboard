@@ -10,19 +10,19 @@ const patientSchema = new Schema({
     },
     required: true
   },
-  
+
   date_of_birth: {
     type: String,
     required: true,
     match: /^(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])-\d{4}$/
   },
-  
+
   gender: {
     type: String,
     required: true,
     enum: ['Male', 'Female', 'Other']
   },
-  
+
   blood_group: {
     type: String,
     required: true,
@@ -34,7 +34,7 @@ const patientSchema = new Schema({
       'None'
     ]
   },
-  
+
   address: {
     type: {
       street: { type: String },
@@ -47,7 +47,7 @@ const patientSchema = new Schema({
     },
     required: true
   },
-  
+
   occupation: {
     type: String,
     enum: [
@@ -55,21 +55,22 @@ const patientSchema = new Schema({
       'Services', 'Retired', 'Government /civil service', 'Other'
     ]
   },
-  
+
   aadhaar: {
     type: String,
-    match: /^[0-9]{12}$/
+    required: [true, 'Aadhaar number is required'],
+    match: [/^[0-9]{12}$/, 'Aadhaar number must be exactly 12 digits']
   },
-  
+
   pan: {
     type: String,
-    match: /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/
+    match: [/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, 'Invalid PAN card format']
   },
-  
+
   img: {
     file_id: { type: Schema.Types.ObjectId }
   },
-  
+
   contact_info: {
     type: {
       mobile: {
@@ -156,7 +157,7 @@ const patientSchema = new Schema({
     },
     required: true
   },
-  
+
   insurance: {
     type: {
       primary: {
@@ -255,8 +256,8 @@ const patientSchema = new Schema({
       enum: ['Active', 'Inactive', 'Resolved', 'Chronic', 'Acute', 'Recurrent', 'Unknown', 'None']
     }
   }],
-  
-family_history: {
+
+  family_history: {
     family_members: [{
       name: {
         first: { type: String, required: true },
@@ -289,10 +290,10 @@ family_history: {
         affected_family_member: {
           type: String,
           enum: [
-          'Father', 'Mother', 'Brother', 'Sister', 'Son', 'Daughter',
-          'Grandfather', 'Grandmother', 'Uncle', 'Aunt', 'Cousin',
-          'Nephew', 'Niece', 'Spouse', 'Other'
-        ], 
+            'Father', 'Mother', 'Brother', 'Sister', 'Son', 'Daughter',
+            'Grandfather', 'Grandmother', 'Uncle', 'Aunt', 'Cousin',
+            'Nephew', 'Niece', 'Spouse', 'Other'
+          ],
           required: true
         },
         genetic_testing_results: {
@@ -303,7 +304,7 @@ family_history: {
       }]
     }]
   },
-  
+
   social_history: {
     tobacco_smoking: {
       current_status: {
@@ -322,7 +323,7 @@ family_history: {
       },
       notes: { type: String }
     },
-    
+
     tobacco_consumption: {
       current_status: {
         type: String,
@@ -340,7 +341,7 @@ family_history: {
       },
       notes: { type: String }
     },
-    
+
     alcohol_use: {
       current_status: {
         type: String,
@@ -357,11 +358,11 @@ family_history: {
       period_of_use: { type: String },
       notes: { type: String }
     },
-    
+
     social_history_free_text: {
       notes: { type: String }
     },
-    
+
     financial_resources: {
       income_level: {
         type: String,
@@ -384,7 +385,7 @@ family_history: {
       },
       notes: { type: String }
     },
-    
+
     education: {
       highest_level_of_education: {
         type: String,
@@ -396,7 +397,7 @@ family_history: {
       },
       notes: { type: String }
     },
-    
+
     physical_activity: {
       frequency: { type: String },
       type_of_exercise: { type: String },
@@ -411,7 +412,7 @@ family_history: {
       },
       notes: { type: String }
     },
-    
+
     stress: {
       perceived_stress_level: {
         type: String,
@@ -421,7 +422,7 @@ family_history: {
       coping_mechanisms: { type: String },
       notes: { type: String }
     },
-    
+
     social_isolation_connection: {
       isolation_status: {
         type: String,
@@ -441,7 +442,7 @@ family_history: {
       frequency_of_social_interactions: { type: String },
       notes: { type: String }
     },
-    
+
     exposure_to_violence: {
       type_of_violence: {
         type: String,
@@ -458,7 +459,7 @@ family_history: {
       support_or_intervention_received: { type: String },
       notes: { type: String }
     },
-    
+
     gender_identity: {
       gender_identity: {
         type: String,
@@ -469,7 +470,7 @@ family_history: {
       },
       notes: { type: String }
     },
-    
+
     sexual_orientation: {
       sexual_orientation: {
         type: String,
@@ -481,7 +482,7 @@ family_history: {
       },
       notes: { type: String }
     },
-    
+
     nutrients_history: {
       dietary_preferences: { type: String },
       supplement_usage: {
@@ -495,5 +496,4 @@ family_history: {
   timestamps: true
 });
 
-// At the end of models/patients.js
 export default mongoose.models.Patient || mongoose.model('Patient', patientSchema);

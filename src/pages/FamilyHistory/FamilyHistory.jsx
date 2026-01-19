@@ -27,41 +27,41 @@ const FamilyHistory = () => {
   });
 
   // Fetch Family History from backend when component loads
-React.useEffect(() => {
-  const fetchFamilyHistory = async () => {
-    const patientId = localStorage.getItem("currentPatientId");
-    if (!patientId) return;
+  React.useEffect(() => {
+    const fetchFamilyHistory = async () => {
+      const patientId = localStorage.getItem("currentPatientId");
+      if (!patientId) return;
 
-    try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/family-history/${patientId}`);
-      if (!response.ok) return;
+      try {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/family-history/${patientId}`);
+        if (!response.ok) return;
 
-      const json = await response.json();
-      console.log("Backend family history:", json);
+        const json = await response.json();
+        console.log("Backend family history:", json);
 
-      // ✅ Support both response shapes
-      const data = json.data || {};
-      const loadedMembers = data.familyMembers || json.familyMembers || [];
-      const loadedGenetics = data.geneticConditions || json.geneticConditions || [];
+        // ✅ Support both response shapes
+        const data = json.data || {};
+        const loadedMembers = data.familyMembers || json.familyMembers || [];
+        const loadedGenetics = data.geneticConditions || json.geneticConditions || [];
 
-      // ✅ Load saved family members
-      if (Array.isArray(loadedMembers) && loadedMembers.length > 0) {
-        setFamilyMembers(loadedMembers);
-        setHasAddedMembers(true);
+        // ✅ Load saved family members
+        if (Array.isArray(loadedMembers) && loadedMembers.length > 0) {
+          setFamilyMembers(loadedMembers);
+          setHasAddedMembers(true);
+        }
+
+        // ✅ Load saved genetic conditions
+        if (Array.isArray(loadedGenetics) && loadedGenetics.length > 0) {
+          setGeneticConditions(loadedGenetics);
+        }
+
+      } catch (error) {
+        console.error("Error loading family history:", error);
       }
+    };
 
-      // ✅ Load saved genetic conditions
-      if (Array.isArray(loadedGenetics) && loadedGenetics.length > 0) {
-        setGeneticConditions(loadedGenetics);
-      }
-
-    } catch (error) {
-      console.error("Error loading family history:", error);
-    }
-  };
-
-  fetchFamilyHistory();
-}, []);
+    fetchFamilyHistory();
+  }, []);
 
 
   const handleMemberChange = (e) => {
@@ -99,7 +99,7 @@ React.useEffect(() => {
       currentMember.relationship !== "Select"
     ) {
       setFamilyMembers([...familyMembers, currentMember]);
-      setHasAddedMembers(true); 
+      setHasAddedMembers(true);
       setCurrentMember({
         firstName: "",
         middleName: "",
@@ -155,12 +155,12 @@ React.useEffect(() => {
 
     setIsLoading(true);
     setSaveStatus('Saving...');
-    
+
     try {
       // ✅ Use patientId from localStorage in the API call
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/family-history/${patientId}`, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -205,7 +205,7 @@ React.useEffect(() => {
     <div className="family-history-container">
       <header className="fixed-header">
         <h1 className="header-title"></h1>
-       </header>
+      </header>
       <h2>Family History</h2>
 
       {/* Save Status Message */}
@@ -251,6 +251,7 @@ React.useEffect(() => {
               placeholder="DD/MM/YYYY"
               value={currentMember.dob}
               onChange={handleMemberChange}
+              max={new Date().toISOString().split('T')[0]}
             />
             <label>Gender</label>
             <select
@@ -387,7 +388,7 @@ React.useEffect(() => {
             Add
           </button>
           <button
-            type="button" 
+            type="button"
             className="save-btn"
             onClick={handleSave}
             disabled={isLoading || familyMembers.length === 0}
@@ -395,10 +396,10 @@ React.useEffect(() => {
             {isLoading ? 'Saving...' : 'Save'}
           </button>
           <button
-            type="button" 
+            type="button"
             className="next-btn"
             disabled={!hasAddedMembers || isLoading}
-            onClick={handleNext} 
+            onClick={handleNext}
           >
             Next
           </button>

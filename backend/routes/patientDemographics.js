@@ -38,7 +38,7 @@ const uploadToGridFS = async (file) => {
   console.log("=== uploadToGridFS called ===");
   console.log("MongoDB connection state:", mongoose.connection.readyState);
   console.log("Database name:", mongoose.connection.db?.databaseName);
-  
+
   return new Promise((resolve, reject) => {
     try {
       const bucket = new GridFSBucket(mongoose.connection.db, {
@@ -108,10 +108,10 @@ router.post("/", upload.single("photo"), async (req, res) => {
     } = req.body;
 
     // Validate required fields
-    if (!firstName || !lastName || !dob || !gender || !bloodGroup) {
+    if (!firstName || !lastName || !dob || !gender || !bloodGroup || !aadharNumber) {
       return res.status(400).json({
         success: false,
-        message: "Missing required fields: firstName, lastName, dob, gender, and bloodGroup are required",
+        message: "Missing required fields: firstName, lastName, dob, gender, bloodGroup, and aadharNumber are required",
       });
     }
 
@@ -176,12 +176,12 @@ router.post("/", upload.single("photo"), async (req, res) => {
       console.log("File buffer size:", req.file.buffer?.length);
       console.log("File mimetype:", req.file.mimetype);
       console.log("File originalname:", req.file.originalname);
-      
+
       try {
         console.log("Attempting to upload to GridFS...");
         const fileId = await uploadToGridFS(req.file);
         console.log("✓ GridFS upload successful! File ID:", fileId);
-        
+
         patientData.img = {
           file_id: fileId,
         };
@@ -219,19 +219,6 @@ router.post("/", upload.single("photo"), async (req, res) => {
       insurance_card_img: {
         file_id: new mongoose.Types.ObjectId()
       }
-    };
-
-    // Format date and time correctly for vitals
-    const now = new Date();
-    const day = String(now.getDate()).padStart(2, '0');
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const year = now.getFullYear();
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    
-    patientData.vitals = {
-      date: `${day}-${month}-${year}`,
-      time: `${hours}:${minutes}`
     };
 
     // Initialize social_history with proper structure
@@ -373,7 +360,7 @@ router.get("/file/:id", async (req, res) => {
 
     // Check if file exists
     const files = await bucket.find({ _id: fileId }).toArray();
-    
+
     if (!files || files.length === 0) {
       return res.status(404).json({
         success: false,
@@ -437,6 +424,14 @@ router.put("/:id", upload.single("photo"), async (req, res) => {
       });
     }
 
+    // Validate required fields
+    if (!firstName || !lastName || !dob || !gender || !bloodGroup || !aadharNumber) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields: firstName, lastName, dob, gender, bloodGroup, and aadharNumber are required",
+      });
+    }
+
     // Map blood group
     const bloodGroupMap = {
       "A+": "A Positive (A⁺)",
@@ -465,8 +460,8 @@ router.put("/:id", upload.single("photo"), async (req, res) => {
     if (country) patient.address.country = country;
     if (bloodGroup) patient.blood_group = bloodGroupMap[bloodGroup] || bloodGroup;
     if (occupation) patient.occupation = occupation;
-    if (aadharNumber) patient.aadhaar = aadharNumber;
-    if (panNumber) patient.pan = panNumber;
+    if (aadharNumber !== undefined) patient.aadhaar = aadharNumber;
+    if (panNumber !== undefined) patient.pan = panNumber;
 
     // Handle photo upload to GridFS
     if (req.file) {

@@ -4,7 +4,7 @@ import "./ExposureToViolence.css";
 const ExposureToViolence = ({ onClose }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   const [formData, setFormData] = useState({
     typeOfViolence: "",
     lastExposure: "",
@@ -16,7 +16,7 @@ const ExposureToViolence = ({ onClose }) => {
   useEffect(() => {
     const fetchExposureToViolenceData = async () => {
       const patientId = localStorage.getItem("currentPatientId");
-      
+
       if (!patientId) {
         console.log("No patient ID found in localStorage");
         setIsLoading(false);
@@ -26,9 +26,9 @@ const ExposureToViolence = ({ onClose }) => {
       try {
         console.log("Fetching exposure to violence data for patient:", patientId);
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/exposure-to-violence`);
-        
+
         console.log("Response status:", response.status);
-        
+
         // Check if response is JSON
         const contentType = response.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {
@@ -99,7 +99,7 @@ const ExposureToViolence = ({ onClose }) => {
       });
 
       console.log("Response status:", response.status);
-      
+
       // Check if response is JSON
       const contentType = response.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
@@ -119,7 +119,7 @@ const ExposureToViolence = ({ onClose }) => {
 
       console.log("Exposure to violence data saved successfully:", result.data);
       alert('Violence exposure information saved successfully!');
-      
+
       // Close the panel after successful save
       if (onClose) {
         onClose();
@@ -183,6 +183,7 @@ const ExposureToViolence = ({ onClose }) => {
           value={formData.lastExposure}
           onChange={handleChange}
           disabled={isSaving}
+          max={new Date().toISOString().split('T')[0]}
         />
       </div>
 
@@ -211,8 +212,8 @@ const ExposureToViolence = ({ onClose }) => {
       </div>
 
       <div className="violence-buttons">
-        <button 
-          className="save-btn" 
+        <button
+          className="save-btn"
           onClick={handleSave}
           disabled={isSaving}
         >

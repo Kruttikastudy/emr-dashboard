@@ -57,11 +57,11 @@ const PatientDemographics = () => {
 
         const json = await response.json();
         console.log("Loaded patient data:", json);
-        
+
         if (!json.success || !json.data) return;
 
         const data = json.data;
-        
+
         setFormData({
           firstName: data.name?.first || "",
           middleName: data.name?.middle || "",
@@ -84,12 +84,12 @@ const PatientDemographics = () => {
 
         // Load image from backend - CORRECTED FOR GRIDFS
         console.log("Image data from backend:", data.img);
-        
+
         if (data.img && data.img.file_id) {
           // Backend stores file_id in GridFS
           const imageUrl = `${import.meta.env.VITE_BACKEND_URL}/api/patient-demographics/file/${data.img.file_id}`;
           console.log("Loading image from GridFS:", imageUrl);
-          
+
           // Test if the image loads
           const img = new Image();
           img.onload = () => {
@@ -176,6 +176,19 @@ const PatientDemographics = () => {
     if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
     if (!formData.dob.trim()) newErrors.dob = "Date of birth is required";
     if (!formData.gender.trim()) newErrors.gender = "Gender is required";
+
+    // Aadhaar validation (Compulsory)
+    if (!formData.aadharNumber.trim()) {
+      newErrors.aadharNumber = "Aadhaar number is required";
+    } else if (!/^[0-9]{12}$/.test(formData.aadharNumber)) {
+      newErrors.aadharNumber = "Aadhaar number must be exactly 12 digits";
+    }
+
+    // PAN validation (Optional)
+    if (formData.panNumber.trim() && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.panNumber)) {
+      newErrors.panNumber = "Invalid PAN card format (e.g., ABCDE1234F)";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -210,16 +223,16 @@ const PatientDemographics = () => {
     try {
       const currentPatientId = localStorage.getItem('currentPatientId');
       const formDataToSend = new FormData();
-      
+
       console.log("=== FRONTEND SAVE ===");
       console.log("Photo file:", formData.photo);
-      
+
       // Append all form fields
       Object.keys(formData).forEach(key => {
         if (key === 'photo' && formData[key]) {
           console.log("✓ Appending photo to FormData:", formData[key].name, formData[key].size, "bytes");
           formDataToSend.append('photo', formData[key]);
-        } else if (formData[key]) {
+        } else if (formData[key] !== undefined && formData[key] !== null) {
           formDataToSend.append(key, formData[key]);
         }
       });
@@ -255,7 +268,7 @@ const PatientDemographics = () => {
         alert(currentPatientId ? "Patient demographics updated successfully!" : "Patient demographics saved successfully!");
         updatePreviewData(formData, "patient");
         setShowPreview(false);
-        
+
         // Reload the page to fetch updated data including image
         window.location.reload();
       } else {
@@ -341,7 +354,7 @@ const PatientDemographics = () => {
               <h2>Patient Demographics Preview</h2>
               <button className="close-btn" onClick={() => setShowPreview(false)}>×</button>
             </div>
-            
+
             <div className="preview-content">
               {/* Patient Photo */}
               {imagePreview && (
@@ -418,10 +431,10 @@ const PatientDemographics = () => {
 
         {/* Display Patient ID in form header if it exists */}
         {patientId && (
-          <div style={{ 
-            textAlign: 'center', 
-            marginBottom: '20px', 
-            fontSize: '14px', 
+          <div style={{
+            textAlign: 'center',
+            marginBottom: '20px',
+            fontSize: '14px',
             color: '#666',
             fontWeight: '500'
           }}>
@@ -477,6 +490,7 @@ const PatientDemographics = () => {
                     name="dob"
                     value={formData.dob}
                     onChange={handleChange}
+                    max={new Date().toISOString().split('T')[0]}
                   />
                   {errors.dob && <span className="error-message">{errors.dob}</span>}
                 </div>
@@ -646,6 +660,7 @@ const PatientDemographics = () => {
                     value={formData.aadharNumber}
                     onChange={handleChange}
                   />
+                  {errors.aadharNumber && <span className="error-message">{errors.aadharNumber}</span>}
                 </div>
 
                 <div className="input-group">
@@ -656,6 +671,7 @@ const PatientDemographics = () => {
                     value={formData.panNumber}
                     onChange={handleChange}
                   />
+                  {errors.panNumber && <span className="error-message">{errors.panNumber}</span>}
                 </div>
               </div>
             </div>

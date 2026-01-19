@@ -25,7 +25,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.1) 75%);
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.1) 75%);
   background-size: 20px 20px;
   opacity: 0.1;
 }
@@ -42,7 +42,7 @@
   background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
   border-right: 1px solid #e1e8ed;
   padding: 25px;
-  box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
 }
 
 .nv-sidebar-header {
@@ -73,7 +73,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
   transition: left 0.5s;
 }
 
@@ -159,7 +159,7 @@
 .patient-item:hover {
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   transform: translateX(5px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .patient-item.selected {
@@ -239,7 +239,7 @@
   background: white;
   padding: 25px;
   border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   border: 1px solid #f0f0f0;
   margin-bottom: 25px;
   animation: fadeInUp 0.5s ease-out;
@@ -250,6 +250,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -436,7 +437,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
   transition: left 0.5s;
 }
 
@@ -508,7 +509,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
   transition: left 0.5s;
 }
 
@@ -525,7 +526,8 @@
 .nv-sidebar-header {
   display: flex;
   align-items: center;
-  gap: 15px; /* Space between logo and button */
+  gap: 15px;
+  /* Space between logo and button */
   padding: 0 0 20px 0;
 }
 
@@ -597,6 +599,7 @@
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
   }
+
   100% {
     opacity: 0;
     transform: translate(-50%, -50%) scale(1.5);
@@ -631,32 +634,32 @@ textarea::placeholder {
     flex-direction: column;
     gap: 0;
   }
-  
+
   .nv-sidebar {
     width: 100%;
     height: 320px;
     padding: 20px;
   }
-  
+
   .main-content {
     padding: 20px;
   }
-  
+
   .form-card {
     padding: 20px;
     margin-bottom: 20px;
   }
-  
+
   .vitals-grid {
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 15px;
   }
-  
+
   .form-actions-row {
     flex-direction: column;
     gap: 10px;
   }
-  
+
   .form-nav {
     flex-direction: column;
     gap: 15px;
@@ -802,115 +805,49 @@ textarea:disabled {
   transform: translateY(-1px);
 }
 
-.med-action-buttons {
+/* Download Button Styles */
+.patient-actions {
   display: flex;
-  gap: 6px;
-  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
 
-.med-add-btn,
-.med-remove-btn {
-  padding: 6px;
+.download-icon-btn {
+  background: none;
   border: none;
-  border-radius: 50%;
+  font-size: 18px;
   cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  width: 30px;
-  height: 30px;
+  padding: 5px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #236D8B;
+}
+
+.download-icon-btn:hover {
+  background-color: rgba(35, 109, 139, 0.1);
+  transform: scale(1.1);
+}
+
+.btn-download {
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
   transition: all 0.3s ease;
-  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.med-add-btn {
-  background-color: #236D8B;
-  color: white;
-  box-shadow: 0 2px 8px rgba(35, 109, 139, 0.3);
-}
-
-.med-add-btn:hover {
-  background-color: #1e5a73;
+.btn-download:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(35, 109, 139, 0.4);
-}
-
-.med-remove-btn {
-  background-color: #e74c3c;
-  color: white;
-  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
-}
-
-.med-remove-btn:hover {
-  background-color: #c0392b;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .visit-layout {
-    flex-direction: column;
-    gap: 0;
-  }
-  
-  .nv-sidebar {
-    width: 100%;
-    height: 320px;
-    padding: 20px;
-  }
-  
-  .main-content {
-    padding: 20px;
-  }
-  
-  .form-card {
-    padding: 20px;
-    margin-bottom: 20px;
-  }
-  
-  .vitals-grid {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 15px;
-  }
-  
-  .form-actions-row {
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .form-nav {
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .medication-table-wrapper {
-    overflow-x: scroll;
-  }
-
-  .medication-table-wrapper table {
-    min-width: 800px;
-  }
-
-  .medication-table-wrapper thead th,
-  .medication-table-wrapper tbody td {
-    padding: 8px 6px;
-    font-size: 12px;
-  }
-
-  .med-action-buttons {
-    flex-direction: column;
-    gap: 4px;
-  }
-}
-
-/* Loading state for inputs */
-input:disabled,
-select:disabled,
-textarea:disabled {
-  background-color: #f8f9fa;
-  color: #6c757d;
-  cursor: not-allowed;
+  box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
 }
