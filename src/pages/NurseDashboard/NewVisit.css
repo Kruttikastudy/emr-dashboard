@@ -893,15 +893,31 @@ textarea:disabled {
   background-color: #f8f9fa;
 }
 
-.icd-code {
+.icd-code,
+.icd-code-small {
   font-weight: 600;
   color: #236D8B;
   font-size: 13px;
 }
 
-.icd-condition {
+.icd-code-small {
+  margin-right: 8px;
+  color: #1e5a73;
+  background: #e3f2fd;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.icd-condition,
+.icd-condition-small {
   font-size: 12px;
   color: #666;
+}
+
+.icd-condition-small {
+  font-style: italic;
+  display: block;
+  margin-top: 2px;
 }
 
 .icd-loading {

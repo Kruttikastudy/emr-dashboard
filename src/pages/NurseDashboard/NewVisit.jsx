@@ -98,8 +98,14 @@ const NewVisit = () => {
     setIsSearchingIcd(true);
     try {
       const response = await axios.get(`/api/icd/search?q=${query}`);
-      setIcdSuggestions(response.data);
-      setShowIcdSuggestions(true);
+      const results = response.data;
+      setIcdSuggestions(results);
+      setShowIcdSuggestions(results.length > 0);
+
+      // If searching by code and there's a single exact match, auto-fill
+      if (type === 'code' && results.length === 1 && results[0].icd_code.toLowerCase() === query.toLowerCase()) {
+        handleSelectIcd(results[0]);
+      }
     } catch (err) {
       console.error('Error searching ICD-10:', err);
     } finally {
@@ -789,6 +795,7 @@ const NewVisit = () => {
                         <ul className="icd-suggestions-list">
                           {icdSuggestions.map((item, index) => (
                             <li key={index} onClick={() => handleSelectIcd(item)}>
+                              <span className="icd-code-small">[{item.icd_code}]</span>
                               <span className="icd-condition">{item.condition}</span>
                             </li>
                           ))}
@@ -814,6 +821,7 @@ const NewVisit = () => {
                           {icdSuggestions.map((item, index) => (
                             <li key={index} onClick={() => handleSelectIcd(item)}>
                               <span className="icd-code">{item.icd_code}</span>
+                              <span className="icd-condition-small">{item.condition}</span>
                             </li>
                           ))}
                         </ul>
