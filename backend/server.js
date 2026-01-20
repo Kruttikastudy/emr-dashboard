@@ -12,6 +12,7 @@ import socialHistoryRoutes from "./routes/socialHistory.js";
 import visitRoutes from './routes/visitRoutes.js';
 import appointmentRoutes from './routes/appointments.js';
 import dashboardRoutes from './routes/DashboardRoutes.js';
+import icdRoutes from './routes/icdRoutes.js';
 
 dotenv.config();
 
@@ -35,6 +36,7 @@ app.use('/api/social-history', socialHistoryRoutes);
 app.use('/api', visitRoutes);
 app.use('/api', appointmentRoutes);
 app.use('/api', dashboardRoutes);
+app.use('/api/icd', icdRoutes);
 
 // Root route
 app.get('/', (req, res) => {

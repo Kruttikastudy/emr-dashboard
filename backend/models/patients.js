@@ -22,7 +22,7 @@ const patientSchema = new Schema({
     required: true,
     enum: ['Male', 'Female', 'Other']
   },
-
+  
   blood_group: {
     type: String,
     required: true,
@@ -157,7 +157,7 @@ const patientSchema = new Schema({
     },
     required: true
   },
-
+  
   insurance: {
     type: {
       primary: {
@@ -256,7 +256,7 @@ const patientSchema = new Schema({
       enum: ['Active', 'Inactive', 'Resolved', 'Chronic', 'Acute', 'Recurrent', 'Unknown', 'None']
     }
   }],
-
+  
   family_history: {
     family_members: [{
       name: {

@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { generateVisitPDF } from '../../utils/pdfGenerator';
@@ -63,6 +63,80 @@ const NewVisit = () => {
   const doctors = [
     'Dr. Smith', 'Dr. Johnson', 'Dr. Williams', 'Dr. Brown', 'Dr. Davis'
   ];
+
+  const [icdSuggestions, setIcdSuggestions] = useState([]);
+  const [showIcdSuggestions, setShowIcdSuggestions] = useState(false);
+  const [isSearchingIcd, setIsSearchingIcd] = useState(false);
+  const [searchType, setSearchType] = useState('condition'); // 'condition' or 'code'
+  const [selectedDiagnosis, setSelectedDiagnosis] = useState(null);
+  const icdContainerRef = useRef(null);
+
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (icdContainerRef.current && !icdContainerRef.current.contains(event.target)) {
+        setShowIcdSuggestions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleIcdSearch = async (query, type) => {
+    setSearchType(type);
+    handleInputChange(type === 'condition' ? 'icdFull' : 'icdQuickest', query);
+
+    if (query.length < 2) {
+      setIcdSuggestions([]);
+      setShowIcdSuggestions(false);
+      return;
+    }
+
+    setIsSearchingIcd(true);
+    try {
+      const response = await axios.get(`/api/icd/search?q=${query}`);
+      setIcdSuggestions(response.data);
+      setShowIcdSuggestions(true);
+    } catch (err) {
+      console.error('Error searching ICD-10:', err);
+    } finally {
+      setIsSearchingIcd(false);
+    }
+  };
+
+  const handleSelectIcd = (item) => {
+    setFormData(prev => ({
+      ...prev,
+      icdQuickest: item.icd_code,
+      icdFull: item.condition
+    }));
+    setSelectedDiagnosis(item);
+    setShowIcdSuggestions(false);
+
+    // Auto-populate drugs if available
+    if (item.drugs) {
+      try {
+        const drugList = typeof item.drugs === 'string'
+          ? item.drugs.split(',').map(d => d.trim())
+          : item.drugs;
+
+        if (Array.isArray(drugList) && drugList.length > 0) {
+          const newMeds = drugList.map(drug => ({
+            ...emptyMedRow(),
+            problem: item.condition,
+            medicine: drug,
+            status: true
+          }));
+          setMedications(newMeds);
+        }
+      } catch (e) {
+        console.error('Error parsing drug suggestions:', e);
+      }
+    }
+  };
 
   // Fetch visits on component mount
   useEffect(() => {
@@ -256,6 +330,7 @@ const NewVisit = () => {
     });
     setMedications([emptyMedRow()]);
     setCurrentStep(1);
+    setSelectedDiagnosis(null);
   };
 
   const isFormMinimal = () => {
@@ -697,20 +772,95 @@ const NewVisit = () => {
 
               <div className="form-group">
                 <h3>Diagnosis</h3>
-                <p className="helper-text">Condition</p>
-                <input
-                  type="text"
-                  value={formData.icdQuickest}
-                  onChange={(e) => handleInputChange('icdQuickest', e.target.value)}
-                  placeholder="Enter ICD-10 code"
-                />
-                <p className="helper-text">Full ICD-10 List</p>
-                <input
-                  type="text"
-                  value={formData.icdFull}
-                  onChange={(e) => handleInputChange('icdFull', e.target.value)}
-                  placeholder="Enter full ICD-10 list"
-                />
+                <div className="diagnosis-section" ref={icdContainerRef}>
+                  <div className="form-group">
+                    <p className="helper-text">Condition</p>
+                    <div className="icd-autocomplete-container">
+                      <input
+                        type="text"
+                        value={formData.icdFull}
+                        onChange={(e) => handleIcdSearch(e.target.value, 'condition')}
+                        onFocus={() => formData.icdFull.length >= 2 && setShowIcdSuggestions(true)}
+                        placeholder="Search condition (e.g. Asthma, Diabetes)"
+                        autoComplete="off"
+                      />
+                      {isSearchingIcd && searchType === 'condition' && <div className="icd-loading">Searching...</div>}
+                      {showIcdSuggestions && searchType === 'condition' && icdSuggestions.length > 0 && (
+                        <ul className="icd-suggestions-list">
+                          {icdSuggestions.map((item, index) => (
+                            <li key={index} onClick={() => handleSelectIcd(item)}>
+                              <span className="icd-condition">{item.condition}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <p className="helper-text">ICD Code</p>
+                    <div className="icd-autocomplete-container">
+                      <input
+                        type="text"
+                        value={formData.icdQuickest}
+                        onChange={(e) => handleIcdSearch(e.target.value, 'code')}
+                        onFocus={() => formData.icdQuickest.length >= 2 && setShowIcdSuggestions(true)}
+                        placeholder="Search ICD Code"
+                        autoComplete="off"
+                      />
+                      {isSearchingIcd && searchType === 'code' && <div className="icd-loading">Searching...</div>}
+                      {showIcdSuggestions && searchType === 'code' && icdSuggestions.length > 0 && (
+                        <ul className="icd-suggestions-list">
+                          {icdSuggestions.map((item, index) => (
+                            <li key={index} onClick={() => handleSelectIcd(item)}>
+                              <span className="icd-code">{item.icd_code}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </div>
+
+                  {selectedDiagnosis && (
+                    <div className="diagnosis-details-card">
+                      <h4>Diagnosis Details</h4>
+                      <div className="details-grid">
+                        <div className="detail-item">
+                          <label>Condition:</label>
+                          <span>{selectedDiagnosis.condition}</span>
+                        </div>
+                        <div className="detail-item">
+                          <label>ICD Code:</label>
+                          <span>{selectedDiagnosis.icd_code}</span>
+                        </div>
+                        <div className="detail-item">
+                          <label>Billability:</label>
+                          <span className={`status-badge ${selectedDiagnosis.billability?.toLowerCase()}`}>
+                            {selectedDiagnosis.billability || 'N/A'}
+                          </span>
+                        </div>
+                        <div className="detail-item">
+                          <label>Years:</label>
+                          <span>{selectedDiagnosis.years || 'N/A'}</span>
+                        </div>
+                        <div className="detail-item full-width">
+                          <label>Synonyms:</label>
+                          <span>{selectedDiagnosis.synonyms || 'None'}</span>
+                        </div>
+                        <div className="detail-item full-width">
+                          <label>Suggested Drugs:</label>
+                          <div className="suggested-drugs-list">
+                            {selectedDiagnosis.drugs ? (
+                              typeof selectedDiagnosis.drugs === 'string'
+                                ? selectedDiagnosis.drugs.split(',').map((d, i) => <span key={i} className="drug-tag">{d.trim()}</span>)
+                                : selectedDiagnosis.drugs.map((d, i) => <span key={i} className="drug-tag">{d}</span>)
+                            ) : 'None'}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="form-group">
