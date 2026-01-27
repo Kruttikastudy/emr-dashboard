@@ -102,10 +102,34 @@ const NewVisit = () => {
       setIcdSuggestions(results);
       setShowIcdSuggestions(results.length > 0);
 
-      // If searching by code and there's a single exact match, auto-fill
-      if (type === 'code' && results.length === 1 && results[0].icd_code.toLowerCase() === query.toLowerCase()) {
-        handleSelectIcd(results[0]);
+      // Check for exact matches to auto-fill/correct
+      const codeMatch = results.find(r => r.icd_code.toLowerCase() === query.toLowerCase());
+      const conditionMatch = results.find(r => r.condition.toLowerCase() === query.toLowerCase());
+
+      if (type === 'condition') {
+        if (codeMatch) {
+          // User typed Code in Condition field -> correct it
+          handleSelectIcd(codeMatch);
+          return;
+        }
+        if (conditionMatch) {
+          // User typed Condition in Condition field -> auto-fill Code
+          handleInputChange('icdQuickest', conditionMatch.icd_code);
+          setSelectedDiagnosis(conditionMatch);
+        }
+      } else { // type === 'code'
+        if (conditionMatch) {
+          // User typed Condition in Code field -> correct it
+          handleSelectIcd(conditionMatch);
+          return;
+        }
+        if (codeMatch) {
+          // User typed Code in Code field -> auto-fill Condition
+          handleInputChange('icdFull', codeMatch.condition);
+          setSelectedDiagnosis(codeMatch);
+        }
       }
+
     } catch (err) {
       console.error('Error searching ICD-10:', err);
     } finally {
@@ -123,20 +147,23 @@ const NewVisit = () => {
     setShowIcdSuggestions(false);
 
     // Auto-populate drugs if available
+    // Auto-populate drugs if available
     if (item.drugs) {
       try {
         const drugList = typeof item.drugs === 'string'
-          ? item.drugs.split(',').map(d => d.trim())
+          ? item.drugs.split(/[,;]/).map(d => d.trim()).filter(d => d) // Split by comma or semicolon
           : item.drugs;
 
         if (Array.isArray(drugList) && drugList.length > 0) {
-          const newMeds = drugList.map(drug => ({
+          // Use only the first drug from the list
+          const firstDrug = drugList[0];
+          const newMed = {
             ...emptyMedRow(),
             problem: item.condition,
-            medicine: drug,
+            medicine: firstDrug,
             status: true
-          }));
-          setMedications(newMeds);
+          };
+          setMedications([newMed]);
         }
       } catch (e) {
         console.error('Error parsing drug suggestions:', e);
