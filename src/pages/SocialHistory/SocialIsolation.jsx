@@ -15,7 +15,7 @@ const SocialIsolation = ({ onClose }) => {
   useEffect(() => {
     const fetchData = async () => {
       const patientId = localStorage.getItem("currentPatientId");
-      
+
       if (!patientId) {
         console.error('No patientId in localStorage');
         setLoading(false);
@@ -27,7 +27,7 @@ const SocialIsolation = ({ onClose }) => {
           `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/social-isolation`
         );
         const data = await response.json();
-        
+
         if (data.success && data.data) {
           setFormData({
             isolationStatus: data.data.isolation_status || "Low",
@@ -102,7 +102,7 @@ const SocialIsolation = ({ onClose }) => {
 
       console.log("Social isolation data saved:", result.data);
       alert('Social isolation information saved successfully!');
-      
+
       // Close the panel after successful save
       if (onClose) {
         onClose();
@@ -118,7 +118,7 @@ const SocialIsolation = ({ onClose }) => {
 
   const handleCancel = async () => {
     const patientId = localStorage.getItem("currentPatientId");
-    
+
     if (!patientId) {
       return;
     }
@@ -129,7 +129,7 @@ const SocialIsolation = ({ onClose }) => {
         `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/social-isolation`
       );
       const data = await response.json();
-      
+
       if (data.success && data.data) {
         setFormData({
           isolationStatus: data.data.isolation_status || "Low",
@@ -229,12 +229,19 @@ const SocialIsolation = ({ onClose }) => {
       </div>
 
       <div className="social-buttons">
-        <button 
-          className="save-btn" 
+        <button
+          className="save-btn"
           onClick={handleSave}
           disabled={isSaving}
         >
           {isSaving ? "Saving..." : "Save Social Data"}
+        </button>
+        <button
+          onClick={onClose}
+          className="close-btn-bottom"
+          type="button"
+        >
+          Close
         </button>
       </div>
     </div>

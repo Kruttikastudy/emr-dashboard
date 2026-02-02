@@ -6,7 +6,7 @@ const SocialText = ({ onClose }) => {
   const { updateSocialText } = useSocialHistory();
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   const [formData, setFormData] = useState({
     notes: "",
   });
@@ -15,7 +15,7 @@ const SocialText = ({ onClose }) => {
   useEffect(() => {
     const loadSocialTextData = async () => {
       const patientId = localStorage.getItem("currentPatientId");
-      
+
       if (!patientId) {
         setIsLoading(false);
         return;
@@ -25,7 +25,7 @@ const SocialText = ({ onClose }) => {
         const response = await fetch(
           `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/social-text`
         );
-        
+
         if (response.ok) {
           const result = await response.json();
           if (result.success && result.data) {
@@ -52,7 +52,7 @@ const SocialText = ({ onClose }) => {
   const handleClose = () => {
     console.log("Close button clicked!");
     console.log("onClose prop:", onClose);
-    
+
     if (onClose) {
       console.log("Calling onClose function");
       onClose();
@@ -100,10 +100,10 @@ const SocialText = ({ onClose }) => {
       if (updateSocialText) {
         updateSocialText(socialTextData);
       }
-      
+
       console.log("Social history text saved:", socialTextData);
       alert('Social History notes saved successfully!');
-      
+
       // Close the panel after successful save
       if (onClose) {
         onClose();
@@ -147,12 +147,19 @@ const SocialText = ({ onClose }) => {
       </div>
 
       <div className="social-text-buttons">
-        <button 
-          className="save-btn" 
+        <button
+          className="save-btn"
           onClick={handleSave}
           disabled={isSaving}
         >
           {isSaving ? "Saving..." : "Save Notes"}
+        </button>
+        <button
+          onClick={onClose}
+          className="close-btn-bottom"
+          type="button"
+        >
+          Close
         </button>
       </div>
     </div>

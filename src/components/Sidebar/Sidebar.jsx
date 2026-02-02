@@ -17,7 +17,7 @@ import logo from "../../assets/logo.jpg";
 
 
 
-const Sidebar = () => {
+const Sidebar = ({ onItemClick }) => {
   const navItems = [
     { icon: User, text: "Patient Demographics", path: "/dashboard/patient-demographics" },
     { icon: Phone, text: "Contact Information", path: "/dashboard/contact-information" },
@@ -44,12 +44,13 @@ const Sidebar = () => {
         {navItems.map((item, index) => {
           const Icon = item.icon;
           return (
-            <NavLink 
-              key={index} 
-              to={item.path} 
-              className={({ isActive }) => 
+            <NavLink
+              key={index}
+              to={item.path}
+              className={({ isActive }) =>
                 `nav-item ${isActive ? "active" : ""}`
               }
+              onClick={onItemClick}
             >
               <div className="icon-box">
                 <Icon size={20} />

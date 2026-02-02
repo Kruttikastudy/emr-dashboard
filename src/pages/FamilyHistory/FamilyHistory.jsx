@@ -66,10 +66,20 @@ const FamilyHistory = () => {
 
   const handleMemberChange = (e) => {
     const { name, value, type, checked } = e.target;
+    const finalValue = type === 'checkbox' ? checked : value;
+
     setCurrentMember(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: finalValue
     }));
+
+    // Requirement: Affected Member should auto-fill with Relationship
+    if (name === "relationship") {
+      setCurrentGeneticCondition(prev => ({
+        ...prev,
+        affectedMember: finalValue
+      }));
+    }
   };
 
   const handleGeneticConditionChange = (e) => {
@@ -91,13 +101,7 @@ const FamilyHistory = () => {
   };
 
   const addFamilyMember = () => {
-    if (
-      currentMember.firstName.trim() &&
-      currentMember.lastName.trim() &&
-      currentMember.dob.trim() &&
-      currentMember.gender !== "Select" &&
-      currentMember.relationship !== "Select"
-    ) {
+    if (currentMember.relationship !== "Select") {
       setFamilyMembers([...familyMembers, currentMember]);
       setHasAddedMembers(true);
       setCurrentMember({
@@ -111,14 +115,19 @@ const FamilyHistory = () => {
         medicalConditions: [],
         newCondition: ""
       });
+    } else {
+      alert("Please select a relationship");
     }
+  };
+
+  const removeFamilyMember = (index) => {
+    setFamilyMembers(familyMembers.filter((_, i) => i !== index));
   };
 
   const addGeneticCondition = () => {
     if (
       currentGeneticCondition.conditionName.trim() &&
-      currentGeneticCondition.affectedMember !== "Select" &&
-      currentGeneticCondition.testResults.trim()
+      currentGeneticCondition.affectedMember !== "Select"
     ) {
       setGeneticConditions([...geneticConditions, currentGeneticCondition]);
       setCurrentGeneticCondition({
@@ -127,6 +136,10 @@ const FamilyHistory = () => {
         testResults: ""
       });
     }
+  };
+
+  const removeGeneticCondition = (index) => {
+    setGeneticConditions(geneticConditions.filter((_, i) => i !== index));
   };
 
   const handleSubmit = (e) => {
@@ -332,36 +345,52 @@ const FamilyHistory = () => {
           <h3>Genetic Conditions:</h3>
           <div className="form-row">
             <label>Condition Name</label>
-            <input
-              type="text"
+            <select
               name="conditionName"
               value={currentGeneticCondition.conditionName}
               onChange={handleGeneticConditionChange}
-            />
+            >
+              <option value="">Select Condition</option>
+              {currentMember.medicalConditions.map((condition, idx) => (
+                <option key={idx} value={condition}>{condition}</option>
+              ))}
+            </select>
           </div>
           <div className="form-row">
-            <label>Affected Family Members Name</label>
+            <label>Affected Family Member (Relationship or Name)</label>
             <select
               name="affectedMember"
               value={currentGeneticCondition.affectedMember}
               onChange={handleGeneticConditionChange}
             >
               <option>Select</option>
-              <option>Father</option>
-              <option>Mother</option>
-              <option>Brother</option>
-              <option>Sister</option>
-              <option>Son</option>
-              <option>Daughter</option>
-              <option>Grandfather</option>
-              <option>Grandmother</option>
-              <option>Uncle</option>
-              <option>Aunt</option>
-              <option>Cousin</option>
-              <option>Nephew</option>
-              <option>Niece</option>
-              <option>Spouse</option>
-              <option>Other</option>
+              {/* Existing relationships */}
+              <optgroup label="Relationship">
+                <option>Father</option>
+                <option>Mother</option>
+                <option>Brother</option>
+                <option>Sister</option>
+                <option>Son</option>
+                <option>Daughter</option>
+                <option>Grandfather</option>
+                <option>Grandmother</option>
+                <option>Uncle</option>
+                <option>Aunt</option>
+                <option>Cousin</option>
+                <option>Nephew</option>
+                <option>Niece</option>
+                <option>Other</option>
+              </optgroup>
+              {/* Dynamically added members */}
+              {familyMembers.length > 0 && (
+                <optgroup label="Specific Members">
+                  {familyMembers.map((m, i) => (
+                    <option key={i} value={`${m.firstName} ${m.lastName}`.trim() || m.relationship}>
+                      {`${m.firstName} ${m.lastName}`.trim() ? `${m.firstName} ${m.lastName} (${m.relationship})` : m.relationship}
+                    </option>
+                  ))}
+                </optgroup>
+              )}
             </select>
           </div>
           <div className="form-row">
@@ -384,21 +413,24 @@ const FamilyHistory = () => {
         </div>
 
         <div className="button-row">
-          <button type="button" className="add-btn" onClick={handleSubmit}>
-            Add
+          <button type="button" className="add-btn" onClick={addFamilyMember}>
+            Add Member
+          </button>
+          <button type="button" className="add-btn" onClick={addGeneticCondition} style={{ background: '#2E86AB' }}>
+            Add Genetic Condition
           </button>
           <button
             type="button"
             className="save-btn"
             onClick={handleSave}
-            disabled={isLoading || familyMembers.length === 0}
+            disabled={isLoading}
           >
             {isLoading ? 'Saving...' : 'Save'}
           </button>
           <button
             type="button"
             className="next-btn"
-            disabled={!hasAddedMembers || isLoading}
+            disabled={isLoading}
             onClick={handleNext}
           >
             Next
@@ -409,19 +441,28 @@ const FamilyHistory = () => {
       {/* Display added family members */}
       {familyMembers.length > 0 && (
         <div className="display-section">
-          <h3>Family Members:</h3>
-          {familyMembers.map((member, index) => (
-            <div key={index} className="member-card">
-              <p><strong>Name:</strong> {`${member.firstName} ${member.middleName} ${member.lastName}`}</p>
-              <p><strong>DOB:</strong> {member.dob}</p>
-              <p><strong>Gender:</strong> {member.gender}</p>
-              <p><strong>Relation:</strong> {member.relationship}</p>
-              <p><strong>Deceased:</strong> {member.deceased ? "Yes" : "No"}</p>
-              {member.medicalConditions.length > 0 && (
-                <p><strong>Medical Conditions:</strong> {member.medicalConditions.join(", ")}</p>
-              )}
-            </div>
-          ))}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h3>Family Members:</h3>
+          </div>
+          <div className="members-grid">
+            {familyMembers.map((member, index) => (
+              <div key={index} className="member-card">
+                <button
+                  className="delete-card-btn"
+                  onClick={() => removeFamilyMember(index)}
+                  title="Remove Member"
+                >×</button>
+                <p><strong>Name:</strong> {`${member.firstName} ${member.middleName} ${member.lastName}`.trim() || 'N/A'}</p>
+                <p><strong>DOB:</strong> {member.dob || 'N/A'}</p>
+                <p><strong>Gender:</strong> {member.gender}</p>
+                <p><strong>Relation:</strong> {member.relationship}</p>
+                <p><strong>Deceased:</strong> {member.deceased ? "Yes" : "No"}</p>
+                {member.medicalConditions.length > 0 && (
+                  <p><strong>Conditions:</strong> {member.medicalConditions.join(", ")}</p>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -435,6 +476,7 @@ const FamilyHistory = () => {
                 <th>Condition Name</th>
                 <th>Affected Member</th>
                 <th>Test Results</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -442,7 +484,13 @@ const FamilyHistory = () => {
                 <tr key={index}>
                   <td>{condition.conditionName}</td>
                   <td>{condition.affectedMember}</td>
-                  <td>{condition.testResults}</td>
+                  <td>{condition.testResults || 'Unknown'}</td>
+                  <td>
+                    <button
+                      className="delete-table-btn"
+                      onClick={() => removeGeneticCondition(index)}
+                    >Delete</button>
+                  </td>
                 </tr>
               ))}
             </tbody>

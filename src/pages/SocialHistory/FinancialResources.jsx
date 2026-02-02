@@ -6,7 +6,7 @@ const FinancialResources = ({ onClose }) => {
   const { updateFinancialResources } = useSocialHistory();
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   const [formData, setFormData] = useState({
     incomeLevel: "Moderate",
     employmentStatus: "Employed",
@@ -18,7 +18,7 @@ const FinancialResources = ({ onClose }) => {
   useEffect(() => {
     const loadFinancialData = async () => {
       const patientId = localStorage.getItem("currentPatientId");
-      
+
       if (!patientId) {
         setIsLoading(false);
         return;
@@ -28,7 +28,7 @@ const FinancialResources = ({ onClose }) => {
         const response = await fetch(
           `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/financial-resources`
         );
-        
+
         if (response.ok) {
           const result = await response.json();
           if (result.success && result.data) {
@@ -58,7 +58,7 @@ const FinancialResources = ({ onClose }) => {
   const handleClose = () => {
     console.log("Close button clicked!");
     console.log("onClose prop:", onClose);
-    
+
     if (onClose) {
       console.log("Calling onClose function");
       onClose();
@@ -107,10 +107,10 @@ const FinancialResources = ({ onClose }) => {
 
       // Update context
       updateFinancialResources(financialData);
-      
+
       console.log("Financial resources saved:", financialData);
       alert('Financial resources saved successfully!');
-      
+
       // Close the panel after successful save
       if (onClose) {
         onClose();
@@ -143,9 +143,9 @@ const FinancialResources = ({ onClose }) => {
 
       <div className="form-group">
         <label>Income Level</label>
-        <select 
-          name="incomeLevel" 
-          value={formData.incomeLevel} 
+        <select
+          name="incomeLevel"
+          value={formData.incomeLevel}
           onChange={handleChange}
         >
           <option>Low</option>
@@ -156,9 +156,9 @@ const FinancialResources = ({ onClose }) => {
 
       <div className="form-group">
         <label>Employment Status</label>
-        <select 
-          name="employmentStatus" 
-          value={formData.employmentStatus} 
+        <select
+          name="employmentStatus"
+          value={formData.employmentStatus}
           onChange={handleChange}
         >
           <option>Employed Full-time</option>
@@ -176,9 +176,9 @@ const FinancialResources = ({ onClose }) => {
 
       <div className="form-group">
         <label>Financial Support</label>
-        <select 
-          name="financialSupport" 
-          value={formData.financialSupport} 
+        <select
+          name="financialSupport"
+          value={formData.financialSupport}
           onChange={handleChange}
         >
           <option>None</option>
@@ -194,9 +194,9 @@ const FinancialResources = ({ onClose }) => {
 
       <div className="form-group">
         <label>Notes</label>
-        <textarea 
-          name="notes" 
-          value={formData.notes} 
+        <textarea
+          name="notes"
+          value={formData.notes}
           onChange={handleChange}
           placeholder="Enter any additional financial information..."
           rows={4}
@@ -204,12 +204,19 @@ const FinancialResources = ({ onClose }) => {
       </div>
 
       <div className="financial-buttons">
-        <button 
-          className="save-btn" 
+        <button
+          className="save-btn"
           onClick={handleSave}
           disabled={isSaving}
         >
           {isSaving ? "Saving..." : "Save Financial Data"}
+        </button>
+        <button
+          onClick={onClose}
+          className="close-btn-bottom"
+          type="button"
+        >
+          Close
         </button>
       </div>
     </div>

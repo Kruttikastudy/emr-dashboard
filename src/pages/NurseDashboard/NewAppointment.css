@@ -23,7 +23,8 @@
 .nv-sidebar-header {
   display: flex;
   align-items: center;
-  gap: 15px; /* Space between logo and button */
+  gap: 15px;
+  /* Space between logo and button */
   padding: 0 0 20px 0;
 }
 
@@ -58,7 +59,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.1) 75%);
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.1) 75%);
   background-size: 20px 20px;
   opacity: 0.1;
 }
@@ -84,7 +85,7 @@
   background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
   border-right: 1px solid #e1e8ed;
   padding: 25px;
-  box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
 }
 
 .medapp-add-patient-container {
@@ -115,7 +116,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
   transition: left 0.5s;
 }
 
@@ -203,7 +204,7 @@
 .medapp-patient-item:hover {
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   transform: translateX(5px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .medapp-patient-item.medapp-selected {
@@ -272,7 +273,7 @@
   background: white;
   padding: 25px;
   border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   border: 1px solid #f0f0f0;
 }
 
@@ -419,7 +420,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
   transition: left 0.5s;
 }
 
@@ -453,6 +454,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -463,33 +465,98 @@
 @media (max-width: 768px) {
   .medapp-main-content {
     flex-direction: column;
+    height: auto;
     gap: 0;
   }
-  
+
   .medapp-left-panel {
+    position: fixed;
+    top: 0;
+    left: -320px;
+    width: 300px;
+    height: 100vh;
+    max-height: 100vh;
+    z-index: 1000;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    background: #fff;
+  }
+
+  .medapp-left-panel.open {
+    left: 0;
+  }
+
+  /* Hamburger Menu Styles */
+  .mobile-header-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
     width: 100%;
-    height: 320px;
-    padding: 20px;
+    position: relative;
+    z-index: 2;
   }
-  
+
+  .mobile-menu-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+    display: block;
+  }
+
+  .mobile-header-title {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    animation: fadeIn 0.3s;
+  }
+
+  .mobile-close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #666;
+    cursor: pointer;
+    margin-left: auto;
+    display: block;
+  }
+
   .medapp-right-panel {
+    flex: none;
+    width: 100%;
+    height: auto;
     padding: 20px;
+    background: #ffffff !important;
+    /* Force solid background on mobile */
+    overflow: visible;
   }
-  
+
   .medapp-form-section {
     padding: 20px;
     margin-bottom: 25px;
   }
-  
+
   .medapp-form-row {
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .medapp-form-group {
     width: 100%;
   }
-  
+
   .medapp-age-input {
     width: 100%;
   }
@@ -514,4 +581,70 @@
   background-color: #f8f9fa;
   color: #6c757d;
   cursor: not-allowed;
+}
+
+.header-actions-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 480px) {
+  .header-actions-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .medapp-header {
+    padding: 15px;
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .nv-sidebar-header {
+    justify-content: center;
+  }
+
+  .medapp-title {
+    font-size: 18px;
+  }
+
+  .medapp-add-patient-container {
+    justify-content: stretch;
+  }
+
+  .medapp-add-patient-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .medapp-form-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .medapp-done-btn {
+    width: 100%;
+  }
+}
+
+/* Ensure mobile elements are hidden on desktop */
+.mobile-menu-btn,
+.sidebar-overlay,
+.mobile-close-btn,
+.mobile-header-title {
+  display: none;
+}
+
+@media (max-width: 768px) {
+
+  .mobile-menu-btn,
+  .mobile-close-btn,
+  .mobile-header-title,
+  .sidebar-overlay {
+    display: block;
+  }
 }

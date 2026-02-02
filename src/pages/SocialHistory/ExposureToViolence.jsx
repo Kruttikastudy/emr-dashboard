@@ -150,7 +150,6 @@ const ExposureToViolence = ({ onClose }) => {
       <div className="panel-header">
         <h3>Exposure to Violence</h3>
       </div>
-
       <div className="form-group">
         <label>Type of Violence</label>
         <select
@@ -161,6 +160,7 @@ const ExposureToViolence = ({ onClose }) => {
           required
         >
           <option value="">Select</option>
+          <option value="None">None</option>
           <option value="Physical">Physical</option>
           <option value="Sexual violence">Sexual violence</option>
           <option value="Emotional abuse">Emotional abuse</option>
@@ -175,29 +175,33 @@ const ExposureToViolence = ({ onClose }) => {
         </select>
       </div>
 
-      <div className="form-group">
-        <label>Date of Last Exposure</label>
-        <input
-          type="date"
-          name="lastExposure"
-          value={formData.lastExposure}
-          onChange={handleChange}
-          disabled={isSaving}
-          max={new Date().toISOString().split('T')[0]}
-        />
-      </div>
+      {formData.typeOfViolence !== "None" && formData.typeOfViolence !== "" && (
+        <>
+          <div className="form-group">
+            <label>Date of Last Exposure</label>
+            <input
+              type="date"
+              name="lastExposure"
+              value={formData.lastExposure}
+              onChange={handleChange}
+              disabled={isSaving}
+              max={new Date().toISOString().split('T')[0]}
+            />
+          </div>
 
-      <div className="form-group">
-        <label>Support or Intervention Received</label>
-        <textarea
-          name="supportReceived"
-          placeholder="e.g., Counseling, legal support, shelter..."
-          value={formData.supportReceived}
-          onChange={handleChange}
-          rows={3}
-          disabled={isSaving}
-        />
-      </div>
+          <div className="form-group">
+            <label>Support or Intervention Received</label>
+            <textarea
+              name="supportReceived"
+              placeholder="e.g., Counseling, legal support, shelter..."
+              value={formData.supportReceived}
+              onChange={handleChange}
+              rows={3}
+              disabled={isSaving}
+            />
+          </div>
+        </>
+      )}
 
       <div className="form-group">
         <label>Notes</label>
@@ -218,6 +222,13 @@ const ExposureToViolence = ({ onClose }) => {
           disabled={isSaving}
         >
           {isSaving ? "Saving..." : "Save Violence Data"}
+        </button>
+        <button
+          onClick={onClose}
+          className="close-btn-bottom"
+          type="button"
+        >
+          Close
         </button>
       </div>
     </div>

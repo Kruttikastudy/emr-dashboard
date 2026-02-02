@@ -29,7 +29,7 @@ const upload = multer({
     const allowedTypes = /jpeg|jpg|png|pdf/;
     const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = allowedTypes.test(file.mimetype);
-    
+
     if (mimetype && extname) {
       return cb(null, true);
     } else {
@@ -71,8 +71,8 @@ router.post('/', async (req, res) => {
     }
 
     if (!primaryCompanyName || !primaryPolicyNumber || !primaryPlanType || !contactNumber) {
-      return res.status(400).json({ 
-        error: 'Primary insurance company name, policy number, plan type, and contact number are required' 
+      return res.status(400).json({
+        error: 'Primary insurance company name, policy number, plan type, and contact number are required'
       });
     }
 
@@ -102,6 +102,10 @@ router.post('/', async (req, res) => {
       insuranceData.insurance_card_img = patient.insurance.insurance_card_img;
     }
 
+    if (patient.insurance?.uploaded_files) {
+      insuranceData.uploaded_files = patient.insurance.uploaded_files;
+    }
+
     // Add secondary insurance if provided
     if (secondaryCompanyName || secondaryPolicyNumber) {
       insuranceData.secondary = {
@@ -126,9 +130,9 @@ router.post('/', async (req, res) => {
 
   } catch (error) {
     console.error('Error saving insurance information:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to save insurance information',
-      details: error.message 
+      details: error.message
     });
   }
 });
@@ -155,9 +159,9 @@ router.get('/:patient_id', async (req, res) => {
 
   } catch (error) {
     console.error('Error fetching insurance information:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to fetch insurance information',
-      details: error.message 
+      details: error.message
     });
   }
 });
@@ -201,9 +205,12 @@ router.put('/:patient_id', async (req, res) => {
       insurance_contact_number: contactNumber
     };
 
-    // Preserve existing insurance card image if it exists
     if (patient.insurance?.insurance_card_img?.file_id) {
       insuranceData.insurance_card_img = patient.insurance.insurance_card_img;
+    }
+
+    if (patient.insurance?.uploaded_files) {
+      insuranceData.uploaded_files = patient.insurance.uploaded_files;
     }
 
     // Add secondary insurance if provided
@@ -229,9 +236,9 @@ router.put('/:patient_id', async (req, res) => {
 
   } catch (error) {
     console.error('Error updating insurance information:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to update insurance information',
-      details: error.message 
+      details: error.message
     });
   }
 });
@@ -256,31 +263,35 @@ router.post('/:patient_id/upload-card', upload.array('insuranceCards', 5), async
     const fileId = new mongoose.Types.ObjectId();
     // Initialize insurance if it doesn't exist
     if (!patient.insurance) {
-      return res.status(400).json({ 
-        error: 'Please create insurance information before uploading card images' 
+      return res.status(400).json({
+        error: 'Please create insurance information before uploading card images'
       });
     }
 
     // Update insurance card image info
     patient.insurance.insurance_card_img = { file_id: fileId };
+
+    // Save the actual filenames to the uploaded_files array
+    const newFiles = req.files.map(file => file.filename);
+    patient.insurance.uploaded_files = [
+      ...(patient.insurance.uploaded_files || []),
+      ...newFiles
+    ];
+
     await patient.save();
 
     res.status(200).json({
+      success: true,
       message: 'Insurance card image(s) uploaded successfully',
       file_id: fileId,
-      files: req.files.map(file => ({
-        filename: file.filename,
-        originalname: file.originalname,
-        path: file.path,
-        size: file.size
-      }))
+      files: newFiles
     });
 
   } catch (error) {
     console.error('Error uploading insurance card:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to upload insurance card',
-      details: error.message 
+      details: error.message
     });
   }
 });
@@ -306,9 +317,9 @@ router.delete('/:patient_id', async (req, res) => {
 
   } catch (error) {
     console.error('Error deleting insurance information:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to delete insurance information',
-      details: error.message 
+      details: error.message
     });
   }
 });

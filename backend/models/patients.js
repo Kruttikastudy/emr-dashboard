@@ -22,7 +22,7 @@ const patientSchema = new Schema({
     required: true,
     enum: ['Male', 'Female', 'Other']
   },
-  
+
   blood_group: {
     type: String,
     required: true,
@@ -64,7 +64,11 @@ const patientSchema = new Schema({
 
   pan: {
     type: String,
-    match: [/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, 'Invalid PAN card format']
+    match: [/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, 'Invalid PAN card format'],
+    index: {
+      unique: true,
+      partialFilterExpression: { pan: { $type: "string" } }
+    }
   },
 
   img: {
@@ -157,7 +161,7 @@ const patientSchema = new Schema({
     },
     required: true
   },
-  
+
   insurance: {
     type: {
       primary: {
@@ -217,6 +221,10 @@ const patientSchema = new Schema({
       },
       insurance_card_img: {
         file_id: { type: Schema.Types.ObjectId }
+      },
+      uploaded_files: {
+        type: [String],
+        default: []
       }
     },
     required: true
@@ -256,17 +264,16 @@ const patientSchema = new Schema({
       enum: ['Active', 'Inactive', 'Resolved', 'Chronic', 'Acute', 'Recurrent', 'Unknown', 'None']
     }
   }],
-  
+
   family_history: {
     family_members: [{
       name: {
-        first: { type: String, required: true },
+        first: { type: String },
         middle: { type: String },
-        last: { type: String, required: true }
+        last: { type: String }
       },
       date_of_birth: {
         type: String,
-        required: true,
         match: /^(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])-\d{4}$/
       },
       gender: {
@@ -345,13 +352,13 @@ const patientSchema = new Schema({
     alcohol_use: {
       current_status: {
         type: String,
-        enum: ['Non-Drinker', 'Moderate Drinker', 'Heavy Drinker']
+        enum: ['', 'Non-Drinker', 'Moderate Drinker', 'Heavy Drinker']
       },
       average_weekly_consumption: { type: String },
       type_of_alcohol: {
         type: String,
         enum: [
-          'Beer', 'Wine', 'Red wine', 'Wiskey', 'Vodka', 'Rum',
+          '', 'Beer', 'Wine', 'Red wine', 'Wiskey', 'Vodka', 'Rum',
           'Gin', 'Tequila', 'Brandy', 'Mixed Drinks', 'Other'
         ]
       },
@@ -447,7 +454,7 @@ const patientSchema = new Schema({
       type_of_violence: {
         type: String,
         enum: [
-          '', 'Physical', 'Sexual violence', 'Emotional abuse',
+          '', 'None', 'Physical', 'Sexual violence', 'Emotional abuse',
           'Financial', 'Domestic violence', 'Child Abuse', 'Elder Abuse',
           'Bullying', 'Workplace violence', 'Community violence', 'Other'
         ]

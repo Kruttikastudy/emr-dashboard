@@ -14,6 +14,7 @@ const NewAppointment = () => {
   const [loading, setLoading] = useState(false);
   const [appointments, setAppointments] = useState([]);
   const [currentAppointmentId, setCurrentAppointmentId] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [formData, setFormData] = useState({
     patientId: '',
     firstName: '',
@@ -91,6 +92,7 @@ const NewAppointment = () => {
       doctor: appointment.doctor || 'Dr. Ram Shah',
       comments: appointment.comments || ''
     });
+    setIsSidebarOpen(false);
   };
 
   // Format date from MM-DD-YYYY to YYYY-MM-DD for input field
@@ -186,6 +188,11 @@ const NewAppointment = () => {
       doctor: 'Dr. Ram Shah',
       comments: ''
     });
+    setIsSidebarOpen(false);
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
   };
 
   const handleDone = async () => {
@@ -289,19 +296,32 @@ const NewAppointment = () => {
 
   return (
     <div className="medapp-container">
-      {/* Header - Placeholder for spacing */}
-      <div className="medapp-header" />
+      {/* Mobile Header */}
+      <div className="medapp-header">
+        <div className="mobile-header-content">
+          <button className="mobile-menu-btn" onClick={toggleSidebar}>
+            ☰
+          </button>
+          <span className="mobile-header-title">Appointments</span>
+        </div>
+      </div>
+
+      {/* Overlay */}
+      {isSidebarOpen && (
+        <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)} />
+      )}
 
       <div className="medapp-main-content">
         {/* Left Panel - Appointment Search */}
-        <div className="medapp-left-panel">
+        <div className={`medapp-left-panel ${isSidebarOpen ? 'open' : ''}`}>
+          <button className="mobile-close-btn" onClick={() => setIsSidebarOpen(false)}>×</button>
 
           {/* Add New Patient button */}
           <div className="medapp-add-patient-container">
             <Link to="/nurse-dashboard" className="nv-logo">
               <img src={logo} alt="Logo" className="nv-logo-image" />
             </Link>
-            <button className="medapp-add-patient-btn" onClick={handleAddPatient}>
+            <button className="medapp-add-patient-btn" onClick={() => { handleAddPatient(); setIsSidebarOpen(false); }}>
               +Add New Patient
             </button>
           </div>

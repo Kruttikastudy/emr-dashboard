@@ -4,41 +4,41 @@
 */
 
 .family-history-container {
-  padding: 30px;
+  padding: 20px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  margin-top: 80px; /* increased space under fixed header */
-  margin-left: 150px;
   color: #2c3e50;
-  max-width: 1000px;
+  max-width: 900px;
+  margin: 0 auto;
   box-sizing: border-box;
   background-color: #fafbfc;
   min-height: 100vh;
+  margin-top: 60px;
+  /* Space for fixed header */
 }
 
-/* Enhanced fixed header with requested color - ONLY affects family history page */
-.family-history-container .fixed-header {
+.fixed-header {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 70px;
-  background: linear-gradient(135deg, #236D8B 0%, #1a5a73 100%);
-  color: #ffffff;
+  height: 60px;
+  background-color: #25708F;
+  color: white;
   display: flex;
   align-items: center;
-  padding: 0 30px;
-  font-size: 1.4rem;
-  font-weight: 700;
+  padding: 0 20px;
+  font-size: 1.25rem;
+  font-weight: bold;
   z-index: 1000;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  border-bottom: 2px solid #236D8B;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
+
 
 /* Enhanced titles */
 .family-history-container h2 {
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 700;
-  margin-bottom: 24px;
+  margin-bottom: 15px;
   color: #1565C0;
   text-align: center;
   position: relative;
@@ -47,29 +47,29 @@
 .family-history-container h2::after {
   content: '';
   display: block;
-  width: 60px;
-  height: 3px;
+  width: 40px;
+  height: 2px;
   background: linear-gradient(90deg, #2196F3, #64B5F6);
-  margin: 10px auto;
+  margin: 5px auto;
   border-radius: 2px;
 }
 
 .family-history-container h3 {
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 600;
-  margin: 25px 0 15px 0;
+  margin: 10px 0 8px 0;
   color: #1976D2;
-  padding-bottom: 8px;
+  padding-bottom: 4px;
   border-bottom: 1px solid #E3F2FD;
 }
 
 /* Enhanced sections */
 .family-history-container .section {
   background: #ffffff;
-  border-radius: 12px;
-  padding: 25px;
-  margin-bottom: 25px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.05);
   border: 1px solid #E3F2FD;
   transition: box-shadow 0.3s ease;
 }
@@ -82,39 +82,42 @@
 .family-history-container .form-row {
   display: flex;
   align-items: center;
-  flex-wrap: nowrap;
-  gap: 15px;
-  margin-bottom: 18px;
-  padding: 8px 0;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding: 2px 0;
 }
 
 /* Enhanced labels */
-.family-history-container .form-row > label {
-  min-width: 140px;
-  width: 140px;
+.family-history-container .form-row>label {
+  min-width: 120px;
+  width: 120px;
   text-align: left;
-  font-size: 14px;
+  font-size: 13px;
   color: #37474F;
-  margin-right: 8px;
+  margin-right: 5px;
   font-weight: 500;
   box-sizing: border-box;
 }
 
-/* Enhanced inputs and selects */
 .family-history-container .form-row input[type="text"],
-.family-history-container .form-row select {
+.family-history-container .form-row select,
+.family-history-container .form-row input[type="date"] {
   box-sizing: border-box;
-  border: 2px solid #E0E7FF;
-  border-radius: 8px;
-  padding: 10px 12px;
-  font-size: 14px;
+  border: 1px solid #d1d9e6;
+  border-radius: 4px;
+  padding: 0 10px;
+  /* Vertical padding 0 to rely on height */
+  font-size: 13px;
   background-color: #ffffff;
   color: #2c3e50;
   outline: none;
-  flex: 0 0 150px;
-  width: 150px;
+  flex: 0 1 180px;
+  width: 180px;
   min-width: 120px;
-  transition: all 0.3s ease;
+  height: 32px !important;
+  max-height: 32px !important;
+  transition: all 0.2s ease;
   font-family: inherit;
 }
 
@@ -132,10 +135,9 @@
 
 /* Enhanced checkboxes */
 .family-history-container .form-row input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  margin-left: 8px;
-  margin-right: 8px;
+  width: 18px;
+  height: 18px;
+  margin: 0 5px;
   accent-color: #2196F3;
   cursor: pointer;
 }
@@ -147,12 +149,10 @@
   min-width: 120px;
 }
 
-/* Expanded inputs for last child */
-.family-history-container .form-row > input[type="text"]:last-child,
-.family-history-container .form-row > select:last-child {
-  flex: 1 1 450px;
-  width: auto;
-  min-width: 380px;
+/* Standardize all inputs in rows */
+.family-history-container .form-row>input,
+.family-history-container .form-row>select {
+  height: 32px !important;
 }
 
 /* Enhanced medical conditions row */
@@ -164,15 +164,16 @@
 }
 
 .family-history-container .condition-row input[type="text"] {
-  flex: 1 1 600px;
-  min-width: 450px;
+  flex: 1 1 200px;
+  min-width: 120px;
   width: auto;
-  border: 2px solid #E0E7FF;
-  padding: 10px 12px;
-  border-radius: 8px;
-  font-size: 14px;
+  border: 1px solid #d1d9e6;
+  padding: 0 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  height: 32px !important;
   box-sizing: border-box;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .family-history-container .condition-row input[type="text"]:focus {
@@ -282,11 +283,11 @@
 
 /* Enhanced display sections */
 .family-history-container .display-section {
-  margin-top: 30px;
+  margin-top: 25px;
   background: #ffffff;
-  border-radius: 12px;
-  padding: 25px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
   border: 1px solid #E3F2FD;
 }
 
@@ -299,12 +300,63 @@
 /* Enhanced member cards */
 .family-history-container .member-card {
   background: linear-gradient(135deg, #F8F9FF, #F3E5F5);
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 15px;
-  border-left: 5px solid #2196F3;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease;
+  border-radius: 8px;
+  padding: 12px 15px;
+  margin-bottom: 12px;
+  border-left: 4px solid #2196F3;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+  position: relative;
+  /* Fixed: Added for delete button positioning */
+}
+
+/* Member Grid Layout */
+.members-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+
+/* Delete button for cards */
+.delete-card-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #ff5252;
+  color: white;
+  border: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  z-index: 1;
+}
+
+.delete-card-btn:hover {
+  opacity: 1;
+}
+
+/* Delete button for table */
+.delete-table-btn {
+  background: #ff5252;
+  color: white;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.delete-table-btn:hover {
+  background: #d32f2f;
 }
 
 .family-history-container .member-card:hover {
@@ -366,45 +418,48 @@
     padding: 20px;
     margin-top: 90px;
   }
-  
+
   .family-history-container .form-row {
     flex-wrap: wrap;
   }
-  
-  .family-history-container .form-row > label {
+
+  .family-history-container .form-row>label {
     width: 100%;
     min-width: 0;
     margin-bottom: 8px;
     font-weight: 600;
   }
-  
-  .family-history-container .form-row > input[type="text"]:last-child,
+
+  .family-history-container .form-row>input[type="text"]:last-child,
   .family-history-container .condition-row input[type="text"] {
     min-width: 0;
     flex: 1 1 100%;
   }
-  
+
   .family-history-container .form-row input[type="text"],
-  .family-history-container .form-row select {
-    flex: 1 1 100%;
+  .family-history-container .form-row select,
+  .family-history-container .form-row input[type="date"] {
     width: 100%;
+    max-width: 300px;
+    /* Don't stretch too wide on larger tablets */
+    height: 32px !important;
   }
-  
+
   .family-history-container .button-row {
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .family-history-container .button-row .add-btn,
   .family-history-container .next-btn {
     width: 100%;
     max-width: 250px;
   }
-  
+
   .family-history-container .genetic-table {
     font-size: 12px;
   }
-  
+
   .family-history-container .genetic-table th,
   .family-history-container .genetic-table td {
     padding: 10px;
@@ -417,6 +472,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -615,8 +671,10 @@
     flex-direction: column;
     gap: 10px;
   }
-  
-  .save-btn, .next-btn, .add-btn {
+
+  .save-btn,
+  .next-btn,
+  .add-btn {
     width: 100%;
     max-width: 200px;
   }
@@ -661,24 +719,24 @@
     bottom: 20px;
     right: 20px;
   }
-  
+
   .done-btn {
     padding: 10px 20px;
     font-size: 14px;
   }
-  
+
   .preview-full-container {
     padding: 10px;
   }
-  
+
   .preview-header h2 {
     font-size: 1.5rem;
   }
-  
+
   .section-content {
     padding: 15px;
   }
-  
+
   .data-item {
     padding: 12px;
     font-size: 14px;

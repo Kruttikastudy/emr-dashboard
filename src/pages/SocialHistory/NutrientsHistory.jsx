@@ -14,7 +14,7 @@ const NutrientsHistory = ({ onClose }) => {
   useEffect(() => {
     const fetchData = async () => {
       const patientId = localStorage.getItem("currentPatientId");
-      
+
       if (!patientId) {
         console.error('No patientId in localStorage');
         setLoading(false);
@@ -26,7 +26,7 @@ const NutrientsHistory = ({ onClose }) => {
           `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/nutrients-history`
         );
         const data = await response.json();
-        
+
         if (data.success && data.data) {
           setFormData({
             dietaryPreferences: data.data.dietary_preferences || "",
@@ -99,7 +99,7 @@ const NutrientsHistory = ({ onClose }) => {
 
       console.log("Nutrients history data saved:", result.data);
       alert('Nutrients history saved successfully!');
-      
+
       // Close the panel after successful save
       if (onClose) {
         onClose();
@@ -115,7 +115,7 @@ const NutrientsHistory = ({ onClose }) => {
 
   const handleCancel = async () => {
     const patientId = localStorage.getItem("currentPatientId");
-    
+
     if (!patientId) {
       return;
     }
@@ -126,7 +126,7 @@ const NutrientsHistory = ({ onClose }) => {
         `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/nutrients-history`
       );
       const data = await response.json();
-      
+
       if (data.success && data.data) {
         setFormData({
           dietaryPreferences: data.data.dietary_preferences || "",
@@ -200,12 +200,19 @@ const NutrientsHistory = ({ onClose }) => {
       </div>
 
       <div className="nutrients-buttons">
-        <button 
-          className="save-btn" 
+        <button
+          className="save-btn"
           onClick={handleSave}
           disabled={isSaving}
         >
           {isSaving ? "Saving..." : "Save Nutrients Data"}
+        </button>
+        <button
+          onClick={onClose}
+          className="close-btn-bottom"
+          type="button"
+        >
+          Close
         </button>
       </div>
     </div>

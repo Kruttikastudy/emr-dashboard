@@ -27,6 +27,10 @@ const InsuranceInformation = () => {
   const [uploadStatus, setUploadStatus] = useState("");
   const [showPreview, setShowPreview] = useState(false);
 
+  // Image Viewer State
+  const [viewerOpen, setViewerOpen] = useState(false);
+  const [viewerUrl, setViewerUrl] = useState(false);
+
   // Load existing insurance data from database
   useEffect(() => {
     const loadInsurance = async () => {
@@ -123,14 +127,20 @@ const InsuranceInformation = () => {
   };
 
   const handleFileChange = (e) => {
-    const files = Array.from(e.target.files); // real File objects
-    const fileObjs = files.map(f => f); // keep as File objects — they have .name
+    const files = Array.from(e.target.files);
+    const fileObjs = files.map(f => f);
     setSelectedFiles(fileObjs);
-    const fileNames = files.map(file => file.name).join(', ');
-    const displayInput = document.querySelector('.upload-input');
-    if (displayInput) {
-      displayInput.value = fileNames;
+  };
+
+  const handleFileClick = (file) => {
+    let url = "";
+    if (file.existing) {
+      url = `${import.meta.env.VITE_BACKEND_URL}/uploads/insurance-cards/${file.name}`;
+    } else {
+      url = URL.createObjectURL(file);
     }
+    setViewerUrl(url);
+    setViewerOpen(true);
   };
 
   const handlePreview = () => {
@@ -195,12 +205,12 @@ const InsuranceInformation = () => {
     const formData = new FormData();
     selectedFiles.forEach(file => {
       // Only upload real File objects, skip existing placeholders
-      if (!file.existing) formData.append("insuranceFiles", file);
+      if (!file.existing) formData.append("insuranceCards", file);
     });
 
     try {
       const uploadRes = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/insurance/upload/${patientId}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/insurance/${patientId}/upload-card`,
         {
           method: "POST",
           body: formData,
@@ -350,6 +360,19 @@ const InsuranceInformation = () => {
           <button className="preview-save-btn" onClick={handleSave}>
             Save
           </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const ImageViewer = () => (
+    <div className="viewer-overlay" onClick={() => setViewerOpen(false)}>
+      <div className="viewer-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="viewer-header">
+          <button className="viewer-close" onClick={() => setViewerOpen(false)}>×</button>
+        </div>
+        <div className="viewer-content">
+          <img src={viewerUrl} alt="Insurance Card" />
         </div>
       </div>
     </div>
@@ -573,19 +596,30 @@ const InsuranceInformation = () => {
         <div className="form-row">
           <div className="input-group full-width">
             <label htmlFor="insuranceCard">Insurance Card Images</label>
-            <div className="upload-row">
-              <input
-                className="upload-input"
-                type="text"
-                readOnly
-                placeholder="Upload Card Image"
-              />
+            <div className="file-list-container">
+              {selectedFiles.length > 0 ? (
+                <div className="file-items">
+                  {selectedFiles.map((file, idx) => (
+                    <div key={idx} className="file-item">
+                      <span
+                        className="file-link"
+                        onClick={() => handleFileClick(file)}
+                        title="Click to view"
+                      >
+                        {file.name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <span className="no-files">No files uploaded</span>
+              )}
               <button
                 className="upload-btn"
                 type="button"
                 onClick={handleBrowseClick}
               >
-                Browse
+                Browse & Upload
               </button>
             </div>
             <input
@@ -615,6 +649,7 @@ const InsuranceInformation = () => {
         </button>
       </div>
       {showPreview && <PreviewModal />}
+      {viewerOpen && <ImageViewer />}
     </div>
   );
 };

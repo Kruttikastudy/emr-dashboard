@@ -47,57 +47,74 @@ const Allergies = () => {
   ];
 
   // Load existing allergy data from database
-useEffect(() => {
-  const loadExistingData = async () => {
-    const patientId = localStorage.getItem("currentPatientId");
-    if (!patientId) return;
+  useEffect(() => {
+    const loadExistingData = async () => {
+      const patientId = localStorage.getItem("currentPatientId");
+      if (!patientId) return;
 
-    try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/allergies/${patientId}`);
-      if (!response.ok) return;
+      try {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/allergies/${patientId}`);
+        if (!response.ok) return;
 
-      const json = await response.json();
-      console.log("Backend returned:", json);
+        const json = await response.json();
+        console.log("Backend returned:", json);
 
-      // ✅ Backend returns json.data as an array
-      const allergies = json.data;
+        // ✅ Backend returns json.data as an array
+        const allergies = json.data;
 
-      if (Array.isArray(allergies) && allergies.length > 0) {
-        const formattedAllergies = allergies.map(a => ({
-          allergen: a.allergen || "",
-          reaction: a.reaction || "",
-          severity: a.severity || "",
-          category: a.category || "",
-          code: a.code || "",
-          status: a.status || "",
-        }));
+        if (Array.isArray(allergies) && allergies.length > 0) {
+          const formattedAllergies = allergies.map(a => ({
+            allergen: a.allergen || "",
+            reaction: a.reaction || "",
+            severity: a.severity || "",
+            category: a.category || "",
+            code: a.code || "",
+            status: a.status || "",
+          }));
 
-        setAllergyData(formattedAllergies);
-      } else {
-        setAllergyData([
-          {
-            allergen: "",
-            reaction: "",
-            severity: "",
-            category: "",
-            code: "",
-            status: "",
-          }
-        ]);
+          setAllergyData(formattedAllergies);
+        } else {
+          setAllergyData([
+            {
+              allergen: "",
+              reaction: "",
+              severity: "",
+              category: "",
+              code: "",
+              status: "",
+            }
+          ]);
+        }
+
+      } catch (err) {
+        console.error("Error loading allergy data:", err);
       }
+    };
 
-    } catch (err) {
-      console.error("Error loading allergy data:", err);
-    }
-  };
-
-  loadExistingData();
-}, []);
+    loadExistingData();
+  }, []);
 
 
   const handleChange = (index, field, value) => {
     const updatedData = [...allergyData];
     updatedData[index][field] = value;
+
+    // Auto-populate code if category changes
+    if (field === "category") {
+      const categoryToCode = {
+        "Medications": "A100: Medications",
+        "Foods": "A200: Foods",
+        "Environmental": "A300: Environmental",
+        "Insects": "A400: Insects",
+        "Latex": "A500: Latex",
+        "Other": "A600: Other"
+      };
+
+      if (categoryToCode[value]) {
+        updatedData[index]["code"] = categoryToCode[value];
+      }
+    }
+
     setAllergyData(updatedData);
   };
 
@@ -156,7 +173,7 @@ useEffect(() => {
         <h1 className="header-title"></h1>
       </header>
       <h2 className="allergies-title">Allergies Information</h2>
-      
+
       <div className="allergies-section">
         <legend className="section-title">Allergy Details</legend>
         <div className="table-container">
@@ -230,7 +247,7 @@ useEffect(() => {
                     </select>
                   </td>
                   <td>
-                    <button 
+                    <button
                       className="remove-btn"
                       onClick={() => handleRemoveRow(index)}
                       disabled={allergyData.length === 1}

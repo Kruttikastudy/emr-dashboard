@@ -24,17 +24,17 @@ const TableDashboard = () => {
       if (!response.ok) {
         throw new Error('Failed to fetch appointments');
       }
-      
+
       const result = await response.json();
       const appointmentsData = Array.isArray(result) ? result : (result.data || []);
-      
+
       // Map the data to include status (default to Active)
       const mappedAppointments = appointmentsData.map(apt => ({
         ...apt,
         status: apt.status || 'Active', // Add status field if not present
         fullName: `${apt.patient_name?.first || ''} ${apt.patient_name?.middle || ''} ${apt.patient_name?.last || ''}`.trim()
       }));
-      
+
       setAppointments(mappedAppointments);
     } catch (err) {
       console.error('Error fetching appointments:', err);
@@ -46,7 +46,7 @@ const TableDashboard = () => {
 
   const handleStatusToggle = async (appointmentId, currentStatus) => {
     const newStatus = currentStatus === 'Active' ? 'Completed' : 'Active';
-    
+
     try {
       // Update locally first for immediate UI feedback
       setAppointments(prevAppointments =>
@@ -79,7 +79,7 @@ const TableDashboard = () => {
     const matchesName = apt.fullName.toLowerCase().includes(nameFilter.toLowerCase());
     const matchesDoctor = (apt.doctor || '').toLowerCase().includes(doctorFilter.toLowerCase());
     const matchesDate = dateFilter === "" || parseDateForFilter(apt.appointment_date) === dateFilter;
-    
+
     return matchesName && matchesDoctor && matchesDate;
   });
 
@@ -145,7 +145,7 @@ const TableDashboard = () => {
             onChange={(e) => setNameFilter(e.target.value)}
           />
         </div>
-        
+
         <div className="pdb-filter-group">
           <label>Doctor Name:</label>
           <input
@@ -156,7 +156,7 @@ const TableDashboard = () => {
             onChange={(e) => setDoctorFilter(e.target.value)}
           />
         </div>
-        
+
         <div className="pdb-filter-group">
           <label>Appointment Date:</label>
           <input
@@ -166,8 +166,8 @@ const TableDashboard = () => {
             onChange={(e) => setDateFilter(e.target.value)}
           />
         </div>
-        
-        <button 
+
+        <button
           className="pdb-clear-btn"
           onClick={() => {
             setNameFilter("");
@@ -202,13 +202,13 @@ const TableDashboard = () => {
             {filteredAppointments.length > 0 ? (
               filteredAppointments.map((apt) => (
                 <tr key={apt._id}>
-                  <td>{apt.fullName}</td>
-                  <td>{apt.age}</td>
-                  <td>{apt.appointment_date}</td>
-                  <td>{apt.appointment_time}</td>
-                  <td>{apt.appointment_type}</td>
-                  <td>{apt.doctor || 'Not Assigned'}</td>
-                  <td>
+                  <td data-label="NAME">{apt.fullName}</td>
+                  <td data-label="AGE">{apt.age}</td>
+                  <td data-label="APPOINTMENT DATE">{apt.appointment_date}</td>
+                  <td data-label="APPOINTMENT TIME">{apt.appointment_time}</td>
+                  <td data-label="APPOINTMENT TYPE">{apt.appointment_type}</td>
+                  <td data-label="DOCTOR">{apt.doctor || 'Not Assigned'}</td>
+                  <td data-label="STATUS">
                     <button
                       className={`pdb-status-toggle ${apt.status === 'Active' ? 'active' : 'completed'}`}
                       onClick={() => handleStatusToggle(apt._id, apt.status)}

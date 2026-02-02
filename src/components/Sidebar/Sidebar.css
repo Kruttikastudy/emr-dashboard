@@ -1,19 +1,18 @@
 .sidebar {
-  width: 300px;
+  width: 100%;
   background-color: #ffffff;
   border-right: 1px solid #e0e6ed;
-  height: calc(100vh - 60px); /* subtract header height */
+  height: 100%;
   display: flex;
   flex-direction: column;
-  position: fixed;
-  top: 60px; /* pushes sidebar below fixed header */
-  left: 0;
-  overflow-y: auto; /* enables scrolling */
+  overflow-y: auto;
+  /* enables scrolling */
 }
 
 /* Header */
 .sidebar-header {
-  background-color: #f8f9fa; /* lighter gray to match theme */
+  background-color: #f8f9fa;
+  /* lighter gray to match theme */
   padding: 20px;
   display: flex;
   align-items: center;
@@ -23,17 +22,22 @@
 
 /* Logo — completely remove all hover effects */
 .logo {
-  width: 72px;               /* make width = height for a perfect circle */
+  width: 72px;
+  /* make width = height for a perfect circle */
   height: 72px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;          /* crop the image to the circle */
+  overflow: hidden;
+  /* crop the image to the circle */
   text-decoration: none;
-  background-color: transparent; /* ensure no bg */
-  transition: none;          /* no hover transitions */
-  pointer-events: auto;      /* keep clickable but no visual feedback */
+  background-color: transparent;
+  /* ensure no bg */
+  transition: none;
+  /* no hover transitions */
+  pointer-events: auto;
+  /* keep clickable but no visual feedback */
 }
 
 /* Completely prevent any hover/focus/active effects on the logo */
@@ -53,10 +57,13 @@
 .logo-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;   /* covers and crops while keeping aspect ratio */
+  object-fit: cover;
+  /* covers and crops while keeping aspect ratio */
   display: block;
-  border-radius: 50%;  /* ensure image edges are rounded even if container styling is overridden */
-  transition: none;    /* no transitions on the image either */
+  border-radius: 50%;
+  /* ensure image edges are rounded even if container styling is overridden */
+  transition: none;
+  /* no transitions on the image either */
 }
 
 /* Prevent hover effects on the image as well */
@@ -70,7 +77,8 @@
   margin: 0;
   font-size: 20px;
   font-weight: 600;
-  color: #333; /* readable dark gray */
+  color: #333;
+  /* readable dark gray */
 }
 
 /* Navigation */

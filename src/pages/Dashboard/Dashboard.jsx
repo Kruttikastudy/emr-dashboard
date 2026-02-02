@@ -7,6 +7,20 @@ export default function Dashboard() {
   const [patientData, setPatientData] = useState({});
   const [contactData, setContactData] = useState({});
   const [insuranceData, setInsuranceData] = useState({});
+  // Initialize sidebar based on screen width
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => window.innerWidth > 768);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const handleItemClick = () => {
+    // Only auto-close on mobile
+    if (window.innerWidth <= 768) {
+      setIsSidebarOpen(false);
+    }
+  };
+
 
   const updatePreviewData = (newData, section) => {
     switch (section) {
@@ -26,15 +40,30 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard-container">
-      <div className="sidebar-container">
-        <Sidebar />
+      {/* Mobile Overlay */}
+      {isSidebarOpen && (
+        <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)} />
+      )}
+
+      {/* Sidebar Container */}
+      <div className={`sidebar-container ${isSidebarOpen ? 'open' : ''}`}>
+        <Sidebar onItemClick={handleItemClick} />
+        <button className="sidebar-toggle-btn close" onClick={() => setIsSidebarOpen(false)} title="Close Sidebar">
+          ×
+        </button>
       </div>
+
       <div className="main-content">
-        <Outlet context={{ 
-          patientData, 
-          contactData, 
-          insuranceData, 
-          updatePreviewData 
+        {!isSidebarOpen && (
+          <button className="sidebar-toggle-btn open" onClick={toggleSidebar} title="Open Sidebar">
+            ☰
+          </button>
+        )}
+        <Outlet context={{
+          patientData,
+          contactData,
+          insuranceData,
+          updatePreviewData
         }} />
       </div>
     </div>

@@ -50,10 +50,10 @@ const SocialHistory = () => {
         acc[key] = false;
         return acc;
       }, {});
-      
+
       // Set the clicked toggle to the opposite of its current value
       newToggles[field] = !prev[field];
-      
+
       return newToggles;
     });
   };
@@ -64,8 +64,8 @@ const SocialHistory = () => {
   };
 
   const handleNext = () => {
-    navigate('/dashboard/social-history-preview', { 
-      state: { socialHistoryData } 
+    navigate('/dashboard/social-history-preview', {
+      state: { socialHistoryData }
     });
   };
 
@@ -73,7 +73,7 @@ const SocialHistory = () => {
     <div className="social-history-container">
       <header className="fixed-header">
         <h1 className="header-title"></h1>
-       </header>
+      </header>
       <h2>Social History</h2>
 
       <div className="toggle-list">
@@ -91,50 +91,55 @@ const SocialHistory = () => {
           </div>
         ))}
       </div>
-
-      {toggles["Tobacco use (Smoking)"] && (
-        <TobaccoUse onClose={() => handleClosePanel("Tobacco use (Smoking)")} />
-      )}
-      {toggles["Tobacco (consumption)"] && (
-        <TobaccoConsumption onClose={() => handleClosePanel("Tobacco (consumption)")} />
-      )}
-      {toggles["Alcohol use"] && (
-        <AlcoholUse onClose={() => handleClosePanel("Alcohol use")} />
-      )}
-      {toggles["Social History (free text)"] && (
-        <SocialText onClose={() => handleClosePanel("Social History (free text)")} />
-      )}
-      {toggles["Financial Resources"] && (
-        <FinancialResources onClose={() => handleClosePanel("Financial Resources")} />
-      )}
-      {toggles["Physical activity"] && (
-        <PhysicalActivity onClose={() => handleClosePanel("Physical activity")} />
-      )}
-      {toggles["Gender identity"] && (
-        <GenderIdentity onClose={() => handleClosePanel("Gender identity")} />
-      )}
-      {toggles["Sexual orientation"] && (
-        <SexualOrientation onClose={() => handleClosePanel("Sexual orientation")} />
-      )}
-      {toggles["Stress"] && (
-        <Stress onClose={() => handleClosePanel("Stress")} />
-      )}
-      {toggles["Social isolation & connection"] && (
-        <SocialIsolation onClose={() => handleClosePanel("Social isolation & connection")} />
-      )}
-      {toggles["Exposure to violence"] && (
-        <ExposureToViolence onClose={() => handleClosePanel("Exposure to violence")} />
-      )}
-      {toggles["Nutrients History"] && (
-        <NutrientsHistory onClose={() => handleClosePanel("Nutrients History")} />
-      )}
-      {toggles["Education"] && (
-        <Education onClose={() => handleClosePanel("Education")} />
+      {Object.entries(toggles).some(([_, val]) => val) && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            {toggles["Tobacco use (Smoking)"] && (
+              <TobaccoUse onClose={() => handleClosePanel("Tobacco use (Smoking)")} />
+            )}
+            {toggles["Tobacco (consumption)"] && (
+              <TobaccoConsumption onClose={() => handleClosePanel("Tobacco (consumption)")} />
+            )}
+            {toggles["Alcohol use"] && (
+              <AlcoholUse onClose={() => handleClosePanel("Alcohol use")} />
+            )}
+            {toggles["Social History (free text)"] && (
+              <SocialText onClose={() => handleClosePanel("Social History (free text)")} />
+            )}
+            {toggles["Financial Resources"] && (
+              <FinancialResources onClose={() => handleClosePanel("Financial Resources")} />
+            )}
+            {toggles["Physical activity"] && (
+              <PhysicalActivity onClose={() => handleClosePanel("Physical activity")} />
+            )}
+            {toggles["Gender identity"] && (
+              <GenderIdentity onClose={() => handleClosePanel("Gender identity")} />
+            )}
+            {toggles["Sexual orientation"] && (
+              <SexualOrientation onClose={() => handleClosePanel("Sexual orientation")} />
+            )}
+            {toggles["Stress"] && (
+              <Stress onClose={() => handleClosePanel("Stress")} />
+            )}
+            {toggles["Social isolation & connection"] && (
+              <SocialIsolation onClose={() => handleClosePanel("Social isolation & connection")} />
+            )}
+            {toggles["Exposure to violence"] && (
+              <ExposureToViolence onClose={() => handleClosePanel("Exposure to violence")} />
+            )}
+            {toggles["Nutrients History"] && (
+              <NutrientsHistory onClose={() => handleClosePanel("Nutrients History")} />
+            )}
+            {toggles["Education"] && (
+              <Education onClose={() => handleClosePanel("Education")} />
+            )}
+          </div>
+        </div>
       )}
 
       <div className="social-history-buttons">
-        <button 
-          className="next-btn" 
+        <button
+          className="next-btn"
           onClick={handleNext}
         >
           Next

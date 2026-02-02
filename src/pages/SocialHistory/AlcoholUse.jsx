@@ -39,7 +39,7 @@ const AlcoholUse = ({ onClose }) => {
 
         const body = await res.json();
         console.log("Raw response:", body);
-        
+
         // Handle different response structures
         const data = body?.data || body?.alcohol_use || null;
 
@@ -69,7 +69,19 @@ const AlcoholUse = ({ onClose }) => {
   // ✅ Handle Input Change
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    setFormData((prev) => {
+      const newData = { ...prev, [name]: value };
+
+      // If status becomes Non-Drinker, clear the consumption details
+      if (name === "status" && value === "Non-Drinker") {
+        newData.weeklyConsumption = "";
+        newData.alcoholType = "";
+        newData.period = "";
+      }
+
+      return newData;
+    });
   };
 
   // ✅ Handle Save (POST for create, PUT for update)
@@ -99,7 +111,7 @@ const AlcoholUse = ({ onClose }) => {
     try {
       // Use PUT if data exists, POST if creating new
       const method = existingData ? "PUT" : "POST";
-      
+
       const res = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/alcohol`,
         {
@@ -155,49 +167,53 @@ const AlcoholUse = ({ onClose }) => {
         </select>
       </div>
 
-      <div className="form-group">
-        <label>Average Weekly Consumption (drinks)</label>
-        <input
-          type="number"
-          name="weeklyConsumption"
-          value={formData.weeklyConsumption}
-          onChange={handleChange}
-          placeholder="e.g., 5"
-        />
-      </div>
+      {formData.status !== "Non-Drinker" && (
+        <>
+          <div className="form-group">
+            <label>Average Weekly Consumption (drinks)</label>
+            <input
+              type="number"
+              name="weeklyConsumption"
+              value={formData.weeklyConsumption}
+              onChange={handleChange}
+              placeholder="e.g., 5"
+            />
+          </div>
 
-      <div className="form-group">
-        <label>Type of Alcohol</label>
-        <select
-          name="alcoholType"
-          value={formData.alcoholType}
-          onChange={handleChange}
-        >
-          <option value="">Select...</option>
-          <option value="Beer">Beer</option>
-          <option value="Wine">Wine</option>
-          <option value="Red wine">Red Wine</option>
-          <option value="Wiskey">Whiskey</option>
-          <option value="Vodka">Vodka</option>
-          <option value="Rum">Rum</option>
-          <option value="Gin">Gin</option>
-          <option value="Tequila">Tequila</option>
-          <option value="Brandy">Brandy</option>
-          <option value="Mixed Drinks">Mixed Drinks</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
+          <div className="form-group">
+            <label>Type of Alcohol</label>
+            <select
+              name="alcoholType"
+              value={formData.alcoholType}
+              onChange={handleChange}
+            >
+              <option value="">Select...</option>
+              <option value="Beer">Beer</option>
+              <option value="Wine">Wine</option>
+              <option value="Red wine">Red Wine</option>
+              <option value="Wiskey">Whiskey</option>
+              <option value="Vodka">Vodka</option>
+              <option value="Rum">Rum</option>
+              <option value="Gin">Gin</option>
+              <option value="Tequila">Tequila</option>
+              <option value="Brandy">Brandy</option>
+              <option value="Mixed Drinks">Mixed Drinks</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
 
-      <div className="form-group">
-        <label>Period of Use</label>
-        <input
-          type="text"
-          name="period"
-          value={formData.period}
-          onChange={handleChange}
-          placeholder="e.g., 2 years"
-        />
-      </div>
+          <div className="form-group">
+            <label>Period of Use</label>
+            <input
+              type="text"
+              name="period"
+              value={formData.period}
+              onChange={handleChange}
+              placeholder="e.g., 2 years"
+            />
+          </div>
+        </>
+      )}
 
       <div className="form-group">
         <label>Notes</label>
@@ -216,6 +232,13 @@ const AlcoholUse = ({ onClose }) => {
           disabled={isSaving}
         >
           {isSaving ? "Saving..." : existingData ? "Save Alcohol Data" : "Save Alcohol Data"}
+        </button>
+        <button
+          onClick={onClose}
+          className="close-btn-bottom"
+          type="button"
+        >
+          Close
         </button>
       </div>
     </div>

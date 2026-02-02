@@ -240,6 +240,13 @@ const TobaccoConsumption = ({ onClose }) => {
         >
           {isSaving ? "Saving..." : "Save Tobacco Consumption Data"}
         </button>
+        <button
+          onClick={onClose}
+          className="close-btn-bottom"
+          type="button"
+        >
+          Close
+        </button>
       </div>
     </div>
   );

@@ -1,147 +1,146 @@
 /* src/pages/Consent/Consent.css */
 .consent-container {
-  max-width: 900px;
-  margin: 0 auto;
-  background-color: #fff;
-  padding: 20px 30px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  line-height: 1.6;
-  margin-top: 50px;
-  margin-left: 300px; /* Account for sidebar */
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px 30px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    margin-left: 0;
+    /* Removed large hardcoded margin, flex layout handles it */
+    padding-top: 60px;
+    /* Added padding for fixed header */
 }
 
 .fixed-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 60px;
-  background-color: #236D8B;
-  color: white;
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  font-size: 1.25rem;
-  font-weight: bold;
-  z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background-color: #236D8B;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    font-size: 1.25rem;
+    font-weight: bold;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .form-title {
-  font-size: 1.8rem;
-  font-weight: bold;
-  margin-bottom: 20px;
-  color: #333;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
 }
 
 .consent-header {
-  margin-bottom: 25px;
-  padding: 15px;
-  background-color: #f8f9fa;
-  border-radius: 6px;
-  border-left: 4px solid #236D8B;
+    margin-bottom: 25px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    border-left: 4px solid #236D8B;
 }
 
 .consent-header p {
-  margin: 8px 0;
-  font-size: 1rem;
-  color: #333;
+    margin: 8px 0;
+    font-size: 1rem;
+    color: #333;
 }
 
-.consent-header u {
-  text-decoration: underline;
-  color: #1e88e5;
-}
+
 
 .consent-body {
-  margin-bottom: 30px;
+    margin-bottom: 30px;
 }
 
 .consent-body p {
-  margin: 20px 0;
-  font-size: 1rem;
-  color: #333;
-  text-align: justify;
+    margin: 20px 0;
+    font-size: 1rem;
+    color: #333;
+    text-align: justify;
 }
 
 .consent-body ol {
-  margin: 20px 0;
-  padding-left: 25px;
+    margin: 20px 0;
+    padding-left: 25px;
 }
 
 .consent-body li {
-  margin-bottom: 15px;
-  font-size: 1rem;
-  color: #333;
-  text-align: justify;
+    margin-bottom: 15px;
+    font-size: 1rem;
+    color: #333;
+    text-align: justify;
 }
 
 .consent-body li strong {
-  color: #236D8B;
+    color: #236D8B;
 }
 
 .consent-confirmation {
-  margin-top: 30px;
-  padding: 20px;
-  background-color: #f0f8ff;
-  border-radius: 6px;
-  border: 1px solid #e3f2fd;
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f0f8ff;
+    border-radius: 6px;
+    border: 1px solid #e3f2fd;
 }
 
 .consent-confirmation p {
-  margin-bottom: 15px;
-  font-weight: 500;
-  color: #333;
+    margin-bottom: 15px;
+    font-weight: 500;
+    color: #333;
 }
 
 .checkbox-label {
-  display: flex;
-  align-items: center;
-  font-size: 1rem;
-  color: #236D8B;
-  font-weight: 500;
-  cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    color: #236D8B;
+    font-weight: 500;
+    cursor: pointer;
 }
 
 .checkbox-label input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  margin-right: 8px;
-  cursor: pointer;
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    cursor: pointer;
 }
 
 .save-btn {
-  display: block;
-  margin: 30px auto;
-  padding: 12px 30px;
-  background-color: #236D8B;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 3px 12px rgba(35, 109, 139, 0.3);
-  transition: all 0.3s ease;
-  min-width: 120px;
+    display: block;
+    margin: 30px auto;
+    padding: 12px 30px;
+    background-color: #236D8B;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 3px 12px rgba(35, 109, 139, 0.3);
+    transition: all 0.3s ease;
+    min-width: 120px;
 }
 
 .save-btn:hover {
-  background-color: #1a5670;
-  box-shadow: 0 4px 16px rgba(35, 109, 139, 0.4);
-  transform: translateY(-1px);
+    background-color: #1a5670;
+    box-shadow: 0 4px 16px rgba(35, 109, 139, 0.4);
+    transform: translateY(-1px);
 }
 
 .save-btn:disabled {
-  background-color: #cccccc;
-  color: #666666;
-  cursor: not-allowed;
-  box-shadow: none;
-  transform: none;
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
 }
 
 .save-btn:disabled:hover {
-  background-color: #cccccc;
-  box-shadow: none;
-  transform: none;
+    background-color: #cccccc;
+    box-shadow: none;
+    transform: none;
 }

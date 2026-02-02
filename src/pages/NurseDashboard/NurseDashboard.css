@@ -320,6 +320,39 @@ ul {
 
   .col {
     flex: none;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .content-scrollable {
+    max-height: 500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .nurse-dashboard {
+    padding: 10px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 28px;
+  }
+
+  .dashboard-header p {
+    font-size: 16px;
+  }
+
+  .card-header-section {
+    flex-direction: column;
+    height: auto;
+    align-items: flex-start;
+    gap: 10px;
+    padding-bottom: 15px;
+  }
+
+  .header-action-btn {
+    width: 100%;
+    min-width: 0;
   }
 }
 

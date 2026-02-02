@@ -2,25 +2,35 @@
   display: flex;
   height: 100vh;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  overflow: hidden; /* Prevent double scroll */
-  background-color: #f0f6fc; /* light medical blue background */
+  overflow: hidden;
+  /* Prevent double scroll */
+  background-color: #f0f6fc;
+  /* light medical blue background */
 }
 
 .sidebar-container {
-  width: 250px;
+  width: 0;
   height: 100vh;
-  overflow-y: auto;
-  background: #1f4e79; /* dark blue sidebar */
+  overflow: hidden;
+  background: #1f4e79;
+  /* dark blue sidebar */
   color: #ffffff;
-  position: sticky;
-  top: 0;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1); /* subtle right shadow */
+  position: relative;
+  transition: width 0.3s ease, padding 0.3s ease;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  /* subtle right shadow */
+  z-index: 1001;
+}
+
+.sidebar-container.open {
+  width: 350px;
 }
 
 .main-content {
   flex: 1;
   padding: 20px;
-  background-color: #eef6fb; /* lighter blue for main background */
+  background-color: #eef6fb;
+  /* lighter blue for main background */
   overflow-y: auto;
   height: 100vh;
   border-left: 1px solid #d0e2f2;
@@ -40,7 +50,8 @@
 .main-content h1,
 .main-content h2,
 .main-content h3 {
-  color: #1f4e79; /* dark blue for section headers */
+  color: #1f4e79;
+  /* dark blue for section headers */
   font-weight: 600;
   margin-bottom: 15px;
 }
@@ -59,12 +70,14 @@
 
 .sidebar-container a:hover,
 .sidebar-container button:hover {
-  background: #3498db; /* lighter blue hover */
+  background: #3498db;
+  /* lighter blue hover */
 }
 
 /* Buttons inside main content */
 button {
-  background: #1f4e79; /* dark blue */
+  background: #1f4e79;
+  /* dark blue */
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -75,7 +88,8 @@ button {
 }
 
 button:hover {
-  background: #2e6da4; /* medium-dark hover */
+  background: #2e6da4;
+  /* medium-dark hover */
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -87,16 +101,129 @@ button:hover {
 
 .sidebar-container::-webkit-scrollbar-track,
 .main-content::-webkit-scrollbar-track {
-  background: #dce9f5; /* soft blue track */
+  background: #dce9f5;
+  /* soft blue track */
 }
 
 .sidebar-container::-webkit-scrollbar-thumb,
 .main-content::-webkit-scrollbar-thumb {
-  background: #5dade2; /* lighter blue thumb */
+  background: #5dade2;
+  /* lighter blue thumb */
   border-radius: 4px;
 }
 
 .sidebar-container::-webkit-scrollbar-thumb:hover,
 .main-content::-webkit-scrollbar-thumb:hover {
-  background: #3498db; /* stronger hover blue */
+  background: #3498db;
+  /* stronger hover blue */
+}
+
+/* Responsive toggle adjustments */
+.sidebar-toggle-btn {
+  position: absolute;
+  background: #1f4e79;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1020;
+}
+
+.sidebar-toggle-btn:hover {
+  background: #2e6da4;
+  transform: scale(1.05);
+}
+
+.sidebar-toggle-btn.open {
+  top: 20px;
+  left: 20px;
+  width: 40px;
+  height: 40px;
+  font-size: 24px;
+}
+
+.sidebar-toggle-btn.close {
+  top: 15px;
+  right: 15px;
+  width: 32px;
+  height: 32px;
+  font-size: 20px;
+  background: rgba(31, 78, 121, 0.1);
+  color: #1f4e79;
+  box-shadow: none;
+}
+
+.sidebar-toggle-btn.close:hover {
+  background: rgba(31, 78, 121, 0.2);
+}
+
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1050;
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    flex-direction: column;
+  }
+
+  .sidebar-toggle-btn.open {
+    display: flex;
+    position: fixed;
+    /* Keep it accessible while scrolling main content */
+    top: 10px;
+    left: 10px;
+    z-index: 1060;
+  }
+
+  .sidebar-overlay {
+    display: block;
+  }
+
+  .sidebar-container {
+    position: fixed;
+    top: 0;
+    left: -350px;
+    width: 350px;
+    height: 100vh;
+    z-index: 1100;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .sidebar-container.open {
+    left: 0;
+  }
+
+  .main-content {
+    width: 100%;
+    padding: 15px;
+    padding-top: 60px;
+    /* Space for the toggle button */
+    height: auto;
+    overflow-y: visible;
+    border-left: none;
+    position: relative;
+  }
 }

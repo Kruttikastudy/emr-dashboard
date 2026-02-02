@@ -26,6 +26,7 @@ const NewVisit = () => {
   const [visits, setVisits] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentVisitId, setCurrentVisitId] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [medications, setMedications] = useState([emptyMedRow()]);
   const [formData, setFormData] = useState({
     visitType: location.state?.visitType || 'Emergency Visit',
@@ -265,6 +266,7 @@ const NewVisit = () => {
 
     // Reset to first step
     setCurrentStep(1);
+    setIsSidebarOpen(false);
   };
 
   // Medication handlers
@@ -364,6 +366,11 @@ const NewVisit = () => {
     setMedications([emptyMedRow()]);
     setCurrentStep(1);
     setSelectedDiagnosis(null);
+    setIsSidebarOpen(false);
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
   };
 
   const isFormMinimal = () => {
@@ -544,15 +551,29 @@ const NewVisit = () => {
 
   return (
     <div className="new-visit">
-      <div className="visit-header" />
+      <div className="visit-header">
+        {/* Mobile Header Elements */}
+        <div className="mobile-header-content">
+          <button className="mobile-menu-btn" onClick={toggleSidebar}>
+            ☰
+          </button>
+          <span className="mobile-header-title">Visits</span>
+        </div>
+      </div>
+
+      {/* Overlay */}
+      {isSidebarOpen && (
+        <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)} />
+      )}
 
       <div className="visit-layout">
-        <aside className="nv-sidebar">
+        <aside className={`nv-sidebar ${isSidebarOpen ? 'open' : ''}`}>
+          <button className="mobile-close-btn" onClick={() => setIsSidebarOpen(false)}>×</button>
           <div className="nv-sidebar-header">
             <Link to="/nurse-dashboard" className="nv-logo">
               <img src={logo} alt="Logo" className="nv-logo-image" />
             </Link>
-            <button className="add-patient-btn" onClick={handleAddPatient}>
+            <button className="add-patient-btn" onClick={() => { handleAddPatient(); setIsSidebarOpen(false); }}>
               + Add New Patient
             </button>
           </div>

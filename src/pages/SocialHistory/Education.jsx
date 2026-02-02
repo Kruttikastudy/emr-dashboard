@@ -13,14 +13,14 @@ const Education = ({ onClose }) => {
   useEffect(() => {
     const loadEducationData = async () => {
       const patientId = localStorage.getItem('currentPatientId');
-      
+
       if (!patientId) {
         return;
       }
 
       try {
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/education`);
-        
+
         if (response.ok) {
           const result = await response.json();
           if (result.success && result.data) {
@@ -46,7 +46,7 @@ const Education = ({ onClose }) => {
   const handleClose = () => {
     console.log("Close button clicked!");
     console.log("onClose prop:", onClose);
-    
+
     if (onClose) {
       console.log("Calling onClose function");
       onClose();
@@ -65,7 +65,7 @@ const Education = ({ onClose }) => {
     try {
       // Get the stored patient ID
       const patientId = localStorage.getItem('currentPatientId');
-      
+
       if (!patientId) {
         alert("Please complete Patient Demographics first");
         return;
@@ -84,13 +84,13 @@ const Education = ({ onClose }) => {
 
       if (response.ok) {
         const result = await response.json();
-        
+
         // Update context with the saved data
         updateEducation(educationData);
-        
+
         console.log("Education data saved:", result.data);
         alert('Education information saved successfully!');
-        
+
         // Optionally close the panel after saving
         if (onClose) {
           onClose();
@@ -156,6 +156,13 @@ const Education = ({ onClose }) => {
       <div className="education-buttons">
         <button className="save-btn" onClick={handleSave}>
           Save Education Data
+        </button>
+        <button
+          onClick={onClose}
+          className="close-btn-bottom"
+          type="button"
+        >
+          Close
         </button>
       </div>
     </div>

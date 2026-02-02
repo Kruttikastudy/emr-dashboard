@@ -4,7 +4,7 @@ import "./GenderIdentity.css";
 const GenderIdentity = ({ onClose }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   const [formData, setFormData] = useState({
     identity: "Male",
     notes: ""
@@ -14,7 +14,7 @@ const GenderIdentity = ({ onClose }) => {
   useEffect(() => {
     const fetchGenderIdentityData = async () => {
       const patientId = localStorage.getItem("currentPatientId");
-      
+
       if (!patientId) {
         console.log("No patient ID found in localStorage");
         setIsLoading(false);
@@ -24,9 +24,9 @@ const GenderIdentity = ({ onClose }) => {
       try {
         console.log("Fetching gender identity data for patient:", patientId);
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/gender-identity`);
-        
+
         console.log("Response status:", response.status);
-        
+
         // Check if response is JSON
         const contentType = response.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {
@@ -88,7 +88,7 @@ const GenderIdentity = ({ onClose }) => {
       });
 
       console.log("Response status:", response.status);
-      
+
       // Check if response is JSON
       const contentType = response.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
@@ -108,7 +108,7 @@ const GenderIdentity = ({ onClose }) => {
 
       console.log("Gender identity data saved successfully:", result.data);
       alert('Gender identity saved successfully!');
-      
+
       // Close the panel after successful save
       if (onClose) {
         onClose();
@@ -141,9 +141,9 @@ const GenderIdentity = ({ onClose }) => {
 
       <div className="form-group">
         <label>Gender Identity</label>
-        <select 
-          name="identity" 
-          value={formData.identity} 
+        <select
+          name="identity"
+          value={formData.identity}
           onChange={handleChange}
           disabled={isSaving}
         >
@@ -168,12 +168,19 @@ const GenderIdentity = ({ onClose }) => {
       </div>
 
       <div className="identity-buttons">
-        <button 
-          className="save-btn" 
+        <button
+          className="save-btn"
           onClick={handleSave}
           disabled={isSaving}
         >
           {isSaving ? "Saving..." : "Save Gender Data"}
+        </button>
+        <button
+          onClick={onClose}
+          className="close-btn-bottom"
+          type="button"
+        >
+          Close
         </button>
       </div>
     </div>

@@ -1,37 +1,43 @@
-/* Panel Container */
 .social-text-panel {
-  position: fixed;
-  top: 100px;
-  right: 30px; /* Same position as tobacco panel */
+  width: 100%;
+  height: 100%;
   background-color: white;
-  border: 1px solid #ccc;
-  width: 750px; /* Same as tobacco panel */
-  padding: 15px; /* Same as tobacco panel */
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
-  border-radius: 6px;
-  z-index: 1000;
-  height:670px; 
-  max-height: 800px; /* Same as tobacco panel */
+  padding: 30px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
 }
 
-/* Panel Header with Close Button */
 .panel-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #f0f4f8;
+  padding-bottom: 10px;
 }
 
 .close-btn {
-  background: none;
+  background: #f1f5f9;
   border: none;
-  font-size: 18px;
+  font-size: 24px;
   cursor: pointer;
-  color: red;
+  color: #64748b;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
 }
 
-/* Input Groups */
+.close-btn:hover {
+  background: #e2e8f0;
+  color: #ef4444;
+}
+
 .form-group {
   margin-bottom: 15px;
   display: flex;
@@ -40,38 +46,53 @@
 
 .form-group select,
 .form-group textarea {
-  padding: 6px;
+  padding: 8px;
   font-size: 14px;
   border-radius: 4px;
   border: 1px solid #ccc;
+  box-sizing: border-box;
+  background-color: white;
 }
 
 textarea {
   resize: vertical;
-  min-height: 50px;
+  min-height: 100px;
 }
 
-/* Buttons */
 .social-text-buttons {
   display: flex;
-  justify-content: space-between;
-  margin-top: 15px;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 25px;
+  padding: 10px 0;
 }
 
 .social-text-buttons button {
-  padding: 6px 12px;
-  border-radius: 4px;
+  padding: 10px 24px;
+  border-radius: 6px;
   border: none;
   cursor: pointer;
+  font-weight: 600;
   font-size: 14px;
+  transition: all 0.2s ease;
 }
 
 .save-btn {
-  background-color: #007baf;
+  background-color: #236D8B;
   color: white;
 }
 
-.cancel-btn {
-  background-color: #ccc;
-  color: black;
+.save-btn:hover {
+  background-color: #1a5269;
+}
+
+.close-btn-bottom {
+  background-color: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.close-btn-bottom:hover {
+  background-color: #e2e8f0;
+  color: #ef4444;
 }

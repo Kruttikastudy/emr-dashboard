@@ -4,7 +4,7 @@ import "./SexualOrientation.css";
 const SexualOrientation = ({ onClose }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   const [formData, setFormData] = useState({
     orientation: "Heterosexual",
     notes: ""
@@ -14,7 +14,7 @@ const SexualOrientation = ({ onClose }) => {
   useEffect(() => {
     const fetchSexualOrientationData = async () => {
       const patientId = localStorage.getItem("currentPatientId");
-      
+
       if (!patientId) {
         console.log("No patient ID found in localStorage");
         setIsLoading(false);
@@ -24,9 +24,9 @@ const SexualOrientation = ({ onClose }) => {
       try {
         console.log("Fetching sexual orientation data for patient:", patientId);
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/social-history/${patientId}/sexual-orientation`);
-        
+
         console.log("Response status:", response.status);
-        
+
         // Check if response is JSON
         const contentType = response.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {
@@ -88,7 +88,7 @@ const SexualOrientation = ({ onClose }) => {
       });
 
       console.log("Response status:", response.status);
-      
+
       // Check if response is JSON
       const contentType = response.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
@@ -108,7 +108,7 @@ const SexualOrientation = ({ onClose }) => {
 
       console.log("Sexual orientation data saved successfully:", result.data);
       alert('Sexual orientation saved successfully!');
-      
+
       // Close the panel after successful save
       if (onClose) {
         onClose();
@@ -141,9 +141,9 @@ const SexualOrientation = ({ onClose }) => {
 
       <div className="form-group">
         <label>Sexual Orientation</label>
-        <select 
-          name="orientation" 
-          value={formData.orientation} 
+        <select
+          name="orientation"
+          value={formData.orientation}
           onChange={handleChange}
           disabled={isSaving}
         >
@@ -172,12 +172,19 @@ const SexualOrientation = ({ onClose }) => {
       </div>
 
       <div className="orientation-buttons">
-        <button 
-          className="save-btn" 
+        <button
+          className="save-btn"
           onClick={handleSave}
           disabled={isSaving}
         >
           {isSaving ? "Saving..." : "Save Orientation Data"}
+        </button>
+        <button
+          onClick={onClose}
+          className="close-btn-bottom"
+          type="button"
+        >
+          Close
         </button>
       </div>
     </div>

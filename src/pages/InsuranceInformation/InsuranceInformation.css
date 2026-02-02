@@ -1,5 +1,6 @@
 .insurance-container {
-  padding: 1.5rem; /* was 2rem */
+  padding: 1.5rem;
+  /* was 2rem */
   background-color: #f8f9fa;
   max-width: 900px;
   margin: 0 auto;
@@ -31,17 +32,21 @@
 
 .insurance-title {
   color: #333;
-  font-size: 1.4rem; /* slightly smaller */
+  font-size: 1.4rem;
+  /* slightly smaller */
   font-weight: 600;
-  margin-top: 40px;   /* was 50px */
-  margin-bottom: 1rem; /* was 2rem */
+  margin-top: 40px;
+  /* was 50px */
+  margin-bottom: 1rem;
+  /* was 2rem */
 }
 
 .insurance-section {
   background-color: white;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  margin-bottom: 1.2rem; /* was 2rem */
+  margin-bottom: 1.2rem;
+  /* was 2rem */
   padding: 0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
@@ -50,13 +55,17 @@
   background-color: #b3e5fc;
   color: #333;
   font-weight: 600;
-  font-size: 0.95rem; /* slightly smaller */
-  padding: 0.5rem 0; /* was 0.75rem */
-  margin: 1rem auto 0 auto; /* was 1.5rem */
+  font-size: 0.95rem;
+  /* slightly smaller */
+  padding: 0.5rem 0;
+  /* was 0.75rem */
+  margin: 1rem auto 0 auto;
+  /* was 1.5rem */
   text-align: center;
   border-radius: 20px;
   border: 1px solid #81d4fa;
-  width: 200px; /* was 220px */
+  width: 200px;
+  /* was 220px */
   display: block;
   position: relative;
 }
@@ -67,15 +76,19 @@
   color: #666;
 }
 
-.insurance-section > div {
-  padding: 1.2rem;   /* was 2rem */
-  padding-top: 1rem; /* was 1.5rem */
+.insurance-section>div {
+  padding: 1.2rem;
+  /* was 2rem */
+  padding-top: 1rem;
+  /* was 1.5rem */
 }
 
 .form-row {
   display: flex;
-  gap: 1rem;          /* was 1.5rem */
-  margin-bottom: 1rem; /* was 1.5rem */
+  gap: 1rem;
+  /* was 1.5rem */
+  margin-bottom: 1rem;
+  /* was 1.5rem */
   align-items: flex-start;
 }
 
@@ -95,24 +108,29 @@
 
 .date-group {
   flex: 2;
-  min-width: 280px; /* slightly reduced */
+  min-width: 280px;
+  /* slightly reduced */
 }
 
 label {
   font-weight: 500;
-  margin-bottom: 0.3rem; /* was 0.5rem */
+  margin-bottom: 0.3rem;
+  /* was 0.5rem */
   color: #333;
-  font-size: 0.85rem; /* slightly smaller */
+  font-size: 0.85rem;
+  /* slightly smaller */
 }
 
 input[type="text"],
 input[type="tel"],
 input[type="date"],
 select {
-  padding: 0.6rem;  /* was 0.75rem */
+  padding: 0.6rem;
+  /* was 0.75rem */
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 0.85rem; /* was 0.9rem */
+  font-size: 0.85rem;
+  /* was 0.9rem */
   background-color: white;
   transition: border-color 0.2s, box-shadow 0.2s;
   height: auto;
@@ -134,20 +152,23 @@ select {
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
   background-size: 0.65rem auto;
-  padding-right: 2rem; /* was 2.5rem */
+  padding-right: 2rem;
+  /* was 2.5rem */
 }
 
 /* Date range styling */
 .date-container {
   display: flex;
   align-items: flex-end;
-  gap: 0.8rem; /* was 1rem */
+  gap: 0.8rem;
+  /* was 1rem */
 }
 
 .phone-input {
   display: flex;
   align-items: center;
-  gap: 0.4rem; /* was 0.5rem */
+  gap: 0.4rem;
+  /* was 0.5rem */
 }
 
 .phone-prefix {
@@ -158,7 +179,8 @@ select {
 
 .phone-input input {
   flex: 1;
-  padding: 0.6rem; /* was 0.75rem */
+  padding: 0.6rem;
+  /* was 0.75rem */
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 0.85rem;
@@ -173,12 +195,14 @@ select {
 .date-label {
   font-size: 0.75rem;
   color: #666;
-  margin-bottom: 0.2rem; /* was 0.25rem */
+  margin-bottom: 0.2rem;
+  /* was 0.25rem */
   font-weight: normal;
 }
 
 .date-input {
-  padding: 0.6rem; /* was 0.75rem */
+  padding: 0.6rem;
+  /* was 0.75rem */
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 0.85rem;
@@ -186,7 +210,8 @@ select {
 }
 
 .date-separator {
-  padding-bottom: 0.3rem; /* was 0.5rem */
+  padding-bottom: 0.3rem;
+  /* was 0.5rem */
   color: #666;
   font-size: 0.85rem;
   flex-shrink: 0;
@@ -194,41 +219,66 @@ select {
 
 /* File input styling */
 input[type="file"] {
-  padding: 0.6rem; /* was 0.75rem */
+  padding: 0.6rem;
+  /* was 0.75rem */
   border: 1px solid #ddd;
   border-radius: 4px;
   background-color: white;
   cursor: pointer;
 }
 
-/* Upload section styling */
-.upload-row {
+/* File list styling */
+.file-list-container {
   display: flex;
-  gap: 0.4rem; /* was 0.5rem */
+  flex-direction: column;
+  gap: 0.8rem;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 1rem;
+}
+
+.file-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.file-item {
+  display: flex;
   align-items: center;
 }
 
-.upload-input {
-  flex: 1;
-  padding: 0.6rem; /* was 0.75rem */
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: #f5f5f5;
+.file-link {
+  color: #2196f3;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+  word-break: break-all;
+}
+
+.file-link:hover {
+  color: #1976d2;
+}
+
+.no-files {
   color: #999;
   font-size: 0.85rem;
+  font-style: italic;
 }
 
 .upload-btn {
+  align-self: flex-start;
   background-color: #2196f3;
   color: white;
   border: none;
-  padding: 0.6rem 1.2rem; /* was 0.75rem 1.5rem */
+  padding: 0.6rem 1.2rem;
   border-radius: 4px;
   cursor: pointer;
   font-weight: 600;
-  font-size: 0.85rem; /* was 0.9rem */
+  font-size: 0.85rem;
   transition: background-color 0.2s;
-  white-space: nowrap;
 }
 
 .upload-btn:hover {
@@ -238,18 +288,23 @@ input[type="file"] {
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 0.8rem; /* was 1rem */
-  margin-top: 1.5rem; /* was 2rem */
-  padding-top: 0.8rem; /* was 1rem */
+  gap: 0.8rem;
+  /* was 1rem */
+  margin-top: 1.5rem;
+  /* was 2rem */
+  padding-top: 0.8rem;
+  /* was 1rem */
 }
 
 .preview-btn {
   background-color: white;
   color: #2196f3;
   border: 1px solid #2196f3;
-  padding: 0.6rem 1.5rem; /* was 0.75rem 2rem */
+  padding: 0.6rem 1.5rem;
+  /* was 0.75rem 2rem */
   border-radius: 4px;
-  font-size: 0.9rem; /* was 1rem */
+  font-size: 0.9rem;
+  /* was 1rem */
   cursor: pointer;
   font-weight: 600;
   transition: background-color 0.2s;
@@ -264,7 +319,8 @@ input[type="file"] {
   background-color: #2196f3;
   color: white;
   border: none;
-  padding: 0.6rem 1.5rem; /* was 0.75rem 2rem */
+  padding: 0.6rem 1.5rem;
+  /* was 0.75rem 2rem */
   border-radius: 4px;
   font-size: 0.9rem;
   cursor: pointer;
@@ -459,21 +515,25 @@ input[type="file"] {
 
   .form-row {
     flex-direction: column;
-    gap: 0.8rem; /* was 1rem */
+    gap: 0.8rem;
+    /* was 1rem */
   }
 
-  .insurance-section > div {
-    padding: 1rem; /* was 1.5rem */
+  .insurance-section>div {
+    padding: 1rem;
+    /* was 1.5rem */
   }
 
   .date-container {
     flex-direction: column;
-    gap: 0.4rem; /* was 0.5rem */
+    gap: 0.4rem;
+    /* was 0.5rem */
     align-items: stretch;
   }
 
   .section-title {
-    width: 180px; /* was 200px */
+    width: 180px;
+    /* was 200px */
     font-size: 0.85rem;
     padding: 0.4rem 0;
   }
@@ -535,12 +595,14 @@ input[type="file"] {
     padding: 0.5rem;
   }
 
-  .insurance-section > div {
-    padding: 0.8rem; /* was 1rem */
+  .insurance-section>div {
+    padding: 0.8rem;
+    /* was 1rem */
   }
 
   .section-title {
-    width: 160px; /* was 180px */
+    width: 160px;
+    /* was 180px */
     font-size: 0.8rem;
   }
 
@@ -568,4 +630,57 @@ input[type="file"] {
   .preview-value {
     font-size: 0.85rem;
   }
+}
+
+/* Image Viewer Styles */
+.viewer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+  padding: 20px;
+}
+
+.viewer-modal {
+  max-width: 90%;
+  max-height: 90%;
+  position: relative;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+}
+
+.viewer-header {
+  position: absolute;
+  top: -40px;
+  right: -10px;
+}
+
+.viewer-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 3rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.viewer-content {
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.viewer-content img {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
 }

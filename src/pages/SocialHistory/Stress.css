@@ -1,16 +1,11 @@
 .stress-panel {
-  position: fixed;
-  top: 100px;
-  right: 30px; /* Same position as tobacco panel */
+  width: 100%;
+  height: 100%;
   background-color: white;
-  border: 1px solid #ccc;
-  width: 750px; /* Same as tobacco panel */
-  padding: 15px; /* Same as tobacco panel */
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
-  border-radius: 6px;
-  z-index: 1000;
-  height:670px; 
-  max-height: 800px; /* Same as tobacco panel */
+  padding: 30px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
 }
 
@@ -18,21 +13,35 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px; /* Same as tobacco panel */
+  margin-bottom: 20px;
+  border-bottom: 2px solid #f0f4f8;
+  padding-bottom: 10px;
 }
 
 .close-btn {
-  background: none;
+  background: #f1f5f9;
   border: none;
-  font-size: 18px;
+  font-size: 24px;
   cursor: pointer;
-  color: red;
+  color: #64748b;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.close-btn:hover {
+  background: #e2e8f0;
+  color: #ef4444;
 }
 
 .form-group {
   margin-bottom: 12px;
   display: flex;
-  flex-direction: column; /* Same vertical layout as tobacco */
+  flex-direction: column;
 }
 
 .form-group label {
@@ -44,68 +53,62 @@
 .form-group input,
 .form-group select,
 .form-group textarea {
-  width: 100%; /* Full width */
-  height: 38px; /* Same height for all */
+  width: 100%;
+  height: 38px;
   padding: 8px;
   font-size: 14px;
   border-radius: 4px;
   border: 1px solid #ccc;
   box-sizing: border-box;
   background-color: white;
-  line-height: 1.6; /* Better line height for text alignment */
+  line-height: 1.6;
 }
 
 .form-group select {
-  padding: 6px 8px; /* Slightly less vertical padding for selects */
-  line-height: 0.8; /* Better line height for select text */
+  padding: 6px 8px;
+  line-height: 0.8;
 }
 
 .form-group textarea {
-  height: 70px; /* Taller for textarea */
+  height: 70px;
   resize: vertical;
-  font-family: inherit; /* Match font family */
-}
-
-/* Duration group - keep inputs on same line but same size */
-.duration-group {
-  display: flex;
-  gap: 8px;
-}
-
-.duration-group input,
-.duration-group select {
-  flex: 1; /* Equal width for both */
-  height: 38px; /* Same height */
+  font-family: inherit;
 }
 
 .stress-buttons {
   display: flex;
-  justify-content: center; /* Center the button like tobacco */
-  margin-top: 10px; /* Same as tobacco panel */
+  justify-content: center;
+  gap: 15px;
+  margin-top: 25px;
+  padding: 10px 0;
 }
 
 .stress-buttons button {
-  padding: 8px 16px; /* Same as tobacco panel */
-  border-radius: 4px;
+  padding: 10px 24px;
+  border-radius: 6px;
   border: none;
   cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s ease;
 }
 
 .save-btn {
-  background-color: #007baf;
+  background-color: #236D8B;
   color: white;
 }
 
 .save-btn:hover {
-  background-color: #006494;
+  background-color: #1a5269;
 }
 
-.cancel-btn {
-  background-color: #f1f1f1;
-  border: 1px solid #ddd;
-  padding: 8px 16px;
+.close-btn-bottom {
+  background-color: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #e2e8f0 !important;
 }
 
-.cancel-btn:hover {
-  background-color: #e1e1e1;
+.close-btn-bottom:hover {
+  background-color: #e2e8f0;
+  color: #ef4444;
 }

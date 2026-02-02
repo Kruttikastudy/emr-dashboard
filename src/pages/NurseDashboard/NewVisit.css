@@ -629,29 +629,126 @@ textarea::placeholder {
 }
 
 /* Responsive adjustments */
+/* Ensure mobile elements are hidden on desktop */
+.mobile-menu-btn,
+.sidebar-overlay,
+.mobile-close-btn,
+.mobile-header-title {
+  display: none;
+}
+
+/* Mobile Header Styles */
+.mobile-header-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.mobile-menu-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.mobile-header-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+}
+
+.mobile-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #666;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
+
+  .mobile-menu-btn,
+  .mobile-close-btn,
+  .mobile-header-title,
+  .sidebar-overlay {
+    display: block;
+  }
+
   .visit-layout {
     flex-direction: column;
     gap: 0;
+    position: relative;
+    height: auto;
   }
 
   .nv-sidebar {
-    width: 100%;
-    height: 320px;
-    padding: 20px;
+    position: fixed;
+    top: 0;
+    left: -320px;
+    width: 300px;
+    height: 100vh;
+    z-index: 1000;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.2);
+    padding: 20px 20px 60px 20px;
+    /* Extra bottom padding for scroll */
+    background: #fff;
+    overflow-y: auto;
+  }
+
+  .nv-sidebar.open {
+    left: 0;
+  }
+
+  .patient-list {
+    max-height: calc(100vh - 120px);
   }
 
   .main-content {
     padding: 20px;
+    width: 100%;
+    margin-left: 0;
   }
 
   .form-card {
-    padding: 20px;
+    padding: 15px;
     margin-bottom: 20px;
   }
 
   .vitals-grid {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
+    /* Force 2 columns on mobile for better fit */
     gap: 15px;
   }
 
@@ -660,9 +757,20 @@ textarea::placeholder {
     gap: 10px;
   }
 
+  .form-actions-row button {
+    width: 100%;
+  }
+
   .form-nav {
     flex-direction: column;
     gap: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .vitals-grid {
+    grid-template-columns: 1fr;
+    /* 1 column on very small screens */
   }
 }
 
