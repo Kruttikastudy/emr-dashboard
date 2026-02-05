@@ -347,7 +347,6 @@ const NurseDashboard = () => {
                         >
                           📥
                         </button>
-                        <div className="status-badge new">New</div>
                       </div>
                     </li>
                   ))}
