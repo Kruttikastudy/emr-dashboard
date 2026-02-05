@@ -91,14 +91,14 @@
   color: #fff;
   border: none;
   border-radius: var(--border-radius);
-  padding: 8px 16px;
-  font-size: 13px;
+  padding: 8px 12px;
+  font-size: 11px;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;
   box-shadow: 0 3px 8px rgba(13, 71, 161, 0.25);
   white-space: nowrap;
-  min-width: 160px;
+  min-width: auto;
   text-align: center;
   flex-shrink: 0;
 }
@@ -107,6 +107,14 @@
   background-color: #0D47A1;
   transform: translateY(-1px);
   box-shadow: 0 6px 14px rgba(13, 71, 161, 0.3);
+}
+
+/* Doctor name styling */
+.doctor-name {
+  font-size: 12px;
+  color: #236D8B;
+  font-weight: 500;
+  margin-top: 2px;
 }
 
 /* Search container - UNIFIED STYLE */
@@ -200,8 +208,8 @@ ul {
   color: #fff;
   border: 1px solid #236D8B;
   border-radius: var(--border-radius);
-  padding: 6px 12px;
-  font-size: 14px;
+  padding: 5px 10px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
@@ -254,6 +262,7 @@ ul {
   display: flex;
   padding: 12px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  align-items: center;
 }
 
 .appointment-time {
@@ -279,8 +288,8 @@ ul {
   color: #fff;
   border: none;
   border-radius: var(--border-radius);
-  padding: 10px 16px;
-  font-size: 14px;
+  padding: 8px 14px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
@@ -380,4 +389,34 @@ ul {
 .download-icon-btn:hover {
   background-color: rgba(35, 109, 139, 0.1);
   transform: scale(1.1);
+}
+
+/* Edit icon button (emoji inside rounded square) */
+.edit-icon-btn {
+  background-color: #236D8B;
+  color: #fff;
+  border: none;
+  font-size: 14px;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.12s ease, background-color 0.12s ease;
+}
+
+.edit-icon-btn:hover {
+  transform: translateY(-2px);
+  background-color: #1b5f78;
+}
+
+/* Appointment actions - align edit/download buttons consistently */
+.appointment-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }

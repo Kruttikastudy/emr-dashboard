@@ -315,8 +315,6 @@ const NurseDashboard = () => {
                     <li
                       key={visit._id}
                       className="recent-patient-item"
-                      onClick={() => handleViewVisit(visit)}
-                      style={{ cursor: 'pointer' }}
                     >
                       <div className="recent-patient-info">
                         <span className="patient-name">
@@ -325,17 +323,26 @@ const NurseDashboard = () => {
                         <span className="visit-type">
                           {visit.visit_type}
                         </span>
+                        {visit.seen_by && (
+                          <span className="doctor-name">
+                            Seen by: Dr. {visit.seen_by}
+                          </span>
+                        )}
                         <span className="visit-time">
                           {formatVisitTime(visit.createdAt)}
                         </span>
                       </div>
                       <div className="recent-patient-actions">
                         <button
+                          className="edit-icon-btn"
+                          onClick={() => handleViewVisit(visit)}
+                          title="Edit Visit"
+                        >
+                          ✏️
+                        </button>
+                        <button
                           className="download-icon-btn"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            generateVisitPDF(visit);
-                          }}
+                          onClick={() => generateVisitPDF(visit)}
                           title="Download PDF"
                         >
                           📥
@@ -380,8 +387,6 @@ const NurseDashboard = () => {
                     <li
                       key={appointment._id}
                       className="appointment-item"
-                      onClick={() => handleViewAppointment(appointment)}
-                      style={{ cursor: 'pointer' }}
                     >
                       <div className="appointment-time">
                         <div>{appointment.appointment_time}</div>
@@ -394,11 +399,25 @@ const NurseDashboard = () => {
                           {appointment.patient_name?.first} {appointment.patient_name?.last}
                         </span>
                         <span className="appointment-type">{appointment.appointment_type}</span>
+                        {appointment.doctor && (
+                          <span className="doctor-name">
+                            Doctor: {appointment.doctor}
+                          </span>
+                        )}
                         {appointment.reason_for_appointment && (
                           <span className="appointment-reason" style={{ fontSize: '0.85em', color: '#666' }}>
                             {appointment.reason_for_appointment}
                           </span>
                         )}
+                      </div>
+                      <div className="appointment-actions">
+                        <button
+                          className="edit-icon-btn"
+                          onClick={() => handleViewAppointment(appointment)}
+                          title="Edit Appointment"
+                        >
+                          ✏️
+                        </button>
                       </div>
                     </li>
                   ))}

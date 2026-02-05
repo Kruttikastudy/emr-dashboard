@@ -109,14 +109,14 @@
 
 /* edit link */
 .pd-edit-link{
-  margin-top:8px;
+  margin-top:6px;
   background:none;
   border:none;
   color:var(--accent);
   text-decoration:underline;
   cursor:pointer;
   padding:0;
-  font-size:14px;
+  font-size:13px;
 }
 
 .pd-edit-link:hover,
